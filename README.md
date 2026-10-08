@@ -1,4 +1,5 @@
 # leaf-telematics-vehicle-profiles
+<<<<<<< HEAD
 
 Data-driven vehicle profiles for the ESP32 telematics device. Each profile
 describes, as JSON, everything the firmware needs to talk to one vehicle:
@@ -361,3 +362,6 @@ schema has no separate FC-transmit-id field.
 4. Run `python tools/validate_profiles.py` — everything must pass.
 5. Keep `comment` fields quoting the source decoder's logic wherever a
    scaling or bit layout is non-obvious.
+=======
+Vehicle Profiles
+>>>>>>> 0445fcaf21becd23c717df69d64fdbdfb32aeb8a
