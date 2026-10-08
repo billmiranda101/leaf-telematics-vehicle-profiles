@@ -1,0 +1,423 @@
+{
+ "id": "jaguar-i-pace",
+ "car_model": "Jaguar: I-PACE",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/jaguar/i-pace.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 10 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224910 (WiCAN pid 224910, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 11 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224911 (WiCAN pid 224911, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 14 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224914 (WiCAN pid 224914, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 18 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224918 (WiCAN pid 224918, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 19 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224919 (WiCAN pid 224919, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 1A 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22491A (WiCAN pid 22491a, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 15 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224915 (WiCAN pid 224915, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 16 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224916 (WiCAN pid 224916, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 17 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224917 (WiCAN pid 224917, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 04 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224904 (WiCAN pid 224904, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 03 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224903 (WiCAN pid 224903, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 0F 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22490F (WiCAN pid 22490F, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 0C 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22490C (WiCAN pid 22490C, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 06 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224906 (WiCAN pid 224906, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 05 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224905 (WiCAN pid 224905, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 07 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224907 (WiCAN pid 224907, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 49 13 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224913 (WiCAN pid 224913, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 DD 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22DD01 (WiCAN pid 22dd01, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 DD 04 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22DD04 (WiCAN pid 22dd04, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 10 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]/100",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 11 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC_MIN",
+     "expr": "[B5:B6]/100",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 14 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC_MAX",
+     "expr": "[B5:B6]/100",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 18 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOH",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 19 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MIN",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 1A 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MAX",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 15 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MAX_2",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 16 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MIN_2",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 17 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MAX_3",
+     "expr": "B5/2",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 04 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_V_MIN",
+     "expr": "[B5:B6]/1000",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 03 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_V_MAX",
+     "expr": "[B5:B6]/1000",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 0F 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_V",
+     "expr": "[B5:B6]/100",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 0C 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_A",
+     "expr": "([B5:B6]-32768)/40",
+     "unit": "A",
+     "class": "current"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 06 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_T_MIN",
+     "expr": "(B5/2)-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 05 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_T_MAX",
+     "expr": "(B5/2)-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 07 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_T_A",
+     "expr": "(B5/2)-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 49 13 00 00 00 00",
+   "signals": [
+    {
+     "name": "REGEN_MAX",
+     "expr": "[B5:B6]/100",
+     "unit": "kW",
+     "class": "power"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 DD 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B5:B7]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 DD 04 00 00 00 00",
+   "signals": [
+    {
+     "name": "T_CAB",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  }
+ ]
+}

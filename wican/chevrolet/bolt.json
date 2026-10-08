@@ -1,0 +1,53 @@
+{
+ "id": "chevrolet-bolt-2",
+ "car_model": "Chevrolet: Bolt",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/chevrolet/bolt.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E4",
+   "data": "03 22 83 34 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 228334 (WiCAN pid 2283341, single, 1 response frame)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 41 A3 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2241A3 (WiCAN pid 2241A31, single, 1 response frame)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 83 34 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "(B5*100)/255",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 41 A3 00 00 00 00",
+   "signals": [
+    {
+     "name": "BATT_CAPACITY",
+     "expr": "[B5:B6]/10",
+     "unit": "Ah",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

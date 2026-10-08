@@ -1,0 +1,33 @@
+{
+ "id": "smart-1",
+ "car_model": "Smart: #1",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/smart/#1.json by tools/convert_wican.py. WiCAN init: ATST64;ATSH7DF;ATSP7;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7DF",
+   "data": "03 22 48 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224801 (WiCAN pid 224801, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 48 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "([B5:B6]-3)/470",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

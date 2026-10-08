@@ -1,0 +1,186 @@
+{
+ "id": "renault-zoe-r110-r90",
+ "car_model": "Renault Zoe R110/R90",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/renault/Renault Zoe R110.json by tools/convert_wican.py. WiCAN init: ATSP6;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7DF",
+   "data": "03 22 20 02 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222002 (WiCAN pid 222002, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 32 06 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 223206 (WiCAN pid 223206, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 34 51 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 223451 (WiCAN pid 223451, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 20 06 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222006 (WiCAN pid 222006, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 20 04 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222004 (WiCAN pid 222004, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 32 04 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 223204 (WiCAN pid 223204, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 33 9D 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22339D (WiCAN pid 22339D, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  },
+  {
+   "id": "0x7DF",
+   "data": "03 22 20 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222001 (WiCAN pid 222001, single, -1 response frames)",
+   "flow_control_id": "0x7E8"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 20 02 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]*0.02",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 32 06 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOH",
+     "expr": "B5",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 34 51 00 00 00 00",
+   "signals": [
+    {
+     "name": "RANGE",
+     "expr": "[B5:B6]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 20 06 00 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B5:B7]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 20 04 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_V",
+     "expr": "[B4:B5]*0.5",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 32 04 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_A",
+     "expr": "[B5:B6]*0.25-8192",
+     "unit": "A",
+     "class": "current"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 33 9D 00 00 00 00",
+   "signals": [
+    {
+     "name": "CHARGER_CONNECTED",
+     "expr": "B4&1",
+     "unit": "",
+     "class": "plug"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 20 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "BATT_TEMP",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  }
+ ]
+}

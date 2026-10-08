@@ -1,0 +1,32 @@
+{
+ "id": "maxus-t90-eunic5-eunic6-eunic9-ev30-eg10-edeliver3-edeliver9-2",
+ "car_model": "Maxus: T90/EUNIC5/EUNIC6/EUNIC9/EV30/EG10/eDeliver3/eDeliver9",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/maxus/t90.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E3",
+   "data": "03 22 E0 02 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22E002 (WiCAN pid 22E0021, single, 1 response frame)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7EB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 E0 02 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "B5",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

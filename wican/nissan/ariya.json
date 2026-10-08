@@ -1,0 +1,54 @@
+{
+ "id": "nissan-ariya-2",
+ "car_model": "Nissan : Ariya",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/nissan/ariya.json by tools/convert_wican.py. WiCAN init: ATSP7;ATST96;ATFCSH18DADBF1;ATFCSD300000;ATFCSM1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x00DADBF1",
+   "data": "03 22 90 02 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 229002 (WiCAN pid 2290021, single, 1 response frame)",
+   "flow_control_id": "0x18DAF1DB"
+  },
+  {
+   "id": "0x00DADBF1",
+   "data": "03 22 90 03 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 229003 (WiCAN pid 2290031, single, 1 response frame)",
+   "flow_control_id": "0x18DAF1DB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x18DAF1DB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 90 02 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]/100",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x18DAF1DB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 90 03 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOH",
+     "expr": "[B5:B6]/100",
+     "unit": "%"
+    }
+   ]
+  }
+ ]
+}

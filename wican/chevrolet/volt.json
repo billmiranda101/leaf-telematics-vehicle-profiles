@@ -1,0 +1,33 @@
+{
+ "id": "chevrolet-volt-ampera",
+ "car_model": "Chevrolet: Volt/Ampera",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/chevrolet/volt.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7DF",
+   "data": "02 01 5B 00 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 015B (WiCAN pid 015B1, single, 1 response frame)",
+   "flow_control_id": "0x7E8"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF 00 00 00 00 00",
+   "match": "00 41 5B 00 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "B4/2.55",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

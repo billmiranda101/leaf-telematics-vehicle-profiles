@@ -1,0 +1,80 @@
+{
+ "id": "toyota-bz4x-2022-2025-2",
+ "car_model": "Toyota: bZ4X 2022-2025",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/toyota/bz4x.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7D2",
+   "data": "03 22 1F 5B 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 221F5B (WiCAN pid 221F5B1, single, 1 response frame)"
+  },
+  {
+   "id": "0x7D2",
+   "data": "03 22 1F 9A 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 221F9A (WiCAN pid 221F9A2, multi, 2 response frames)"
+  },
+  {
+   "id": "0x747",
+   "data": "03 22 18 1A 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22181A (WiCAN pid 22181A2, multi, 2 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7DA",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 1F 5B 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "B5/2.55",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7DA",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 1F 9A 00 00 00",
+   "signals": [
+    {
+     "name": "HV_A",
+     "expr": "(([B8:B9])-(([B8:B9]&32768)>>15)*65536)*0.1",
+     "unit": "A",
+     "class": "current"
+    },
+    {
+     "name": "HV_V",
+     "expr": "((B6*256)+B7)*0.015625",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  },
+  {
+   "id": "0x74F",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 18 1A 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_V_001",
+     "expr": "[B4:B5]/13107",
+     "unit": "V",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

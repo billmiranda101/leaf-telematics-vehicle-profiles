@@ -1,0 +1,33 @@
+{
+ "id": "renault-twizy-2",
+ "car_model": "Renault: Twizy",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/renault/twizy.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;ATSH79B;ATFCSH79B;ATFCSD300000;ATFCSM1;ATCRA7BB;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x79B",
+   "data": "02 21 03 00 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 2103 (WiCAN pid 21035, multi, 5 response frames)",
+   "flow_control_id": "0x7BB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7BB",
+   "isotp": true,
+   "mask": "F0 00 FF FF 00 00 00 00",
+   "match": "10 00 61 03 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B25:B26]/100",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

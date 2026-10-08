@@ -1,0 +1,98 @@
+{
+ "id": "smart-eq-2",
+ "car_model": "Smart: EQ",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/smart/eq.json by tools/convert_wican.py. WiCAN init: ATST64;ATSP6;ATFCSH79B;ATFCSD300000;ATFCSM1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x79B",
+   "data": "02 21 08 00 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 2108 (WiCAN pid 21083, multi, 3 response frames)",
+   "flow_control_id": "0x7BB"
+  },
+  {
+   "id": "0x743",
+   "data": "03 22 02 07 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 220207 (WiCAN pid 220207, single, -1 response frames)",
+   "flow_control_id": "0x763"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 34 51 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 223451 (WiCAN pid 223451, single, -1 response frames)"
+  },
+  {
+   "id": "0x792",
+   "data": "03 22 30 08 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 223008 (WiCAN pid 223008, single, -1 response frames)",
+   "flow_control_id": "0x793"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7BB",
+   "isotp": true,
+   "mask": "F0 00 FF FF 00 00 00 00",
+   "match": "10 00 61 08 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B9:B10]/16",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x763",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 02 07 00 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B5:B7]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 34 51 00 00 00 00",
+   "signals": [
+    {
+     "name": "RANGE",
+     "expr": "[B5:B6]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x793",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 30 08 00 00 00 00",
+   "signals": [
+    {
+     "name": "CHARGER_CONNECTED",
+     "expr": "B5",
+     "unit": "",
+     "class": "plug"
+    }
+   ]
+  }
+ ]
+}

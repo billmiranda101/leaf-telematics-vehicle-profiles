@@ -1,0 +1,143 @@
+{
+ "id": "opel-ampere-e-2019",
+ "car_model": "Opel: Ampere-E 2019",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/opel/ampere-e-2019.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;ATSH7E0;ATSH7E1;ATSH7E4;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E4",
+   "data": "03 22 83 34 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 228334 (WiCAN pid 2283341, single, 1 response frame)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 45 F9 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2245F9 (WiCAN pid 2245F9, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 43 4F 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22434F (WiCAN pid 22434F, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 43 69 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224369 (WiCAN pid 224369, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 43 68 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224368 (WiCAN pid 224368, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 45 33 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224533 (WiCAN pid 224533, single, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 83 34 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "(B5*100)/255",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 45 F9 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_CAPACITY",
+     "expr": "((B5*256)+B6)/100",
+     "unit": "Ah",
+     "class": "battery"
+    },
+    {
+     "name": "HV_CAPACITY_KWH",
+     "expr": "((B5*256)+B6)*0.0032",
+     "unit": "kWh",
+     "class": "energy"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 43 4F 00 00 00 00",
+   "signals": [
+    {
+     "name": "BATT_TEMP",
+     "expr": "(B5-40)",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 43 69 00 00 00 00",
+   "signals": [
+    {
+     "name": "AC_C_C",
+     "expr": "B5*.2",
+     "unit": "A",
+     "class": "current"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 43 68 00 00 00 00",
+   "signals": [
+    {
+     "name": "AC_C_V",
+     "expr": "B5*2",
+     "unit": "V",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 45 33 00 00 00 00",
+   "signals": [
+    {
+     "name": "CHARGING_R_A",
+     "expr": "B5*0.3",
+     "unit": "A",
+     "class": "current"
+    }
+   ]
+  }
+ ]
+}

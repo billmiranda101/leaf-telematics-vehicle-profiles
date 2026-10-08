@@ -1,0 +1,94 @@
+{
+ "id": "mg-mg5-marvel-zs-2",
+ "car_model": "MG: MG5/Marvel/ZS",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/mg/mg5-marvel-zs.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST64;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E5",
+   "data": "03 22 B0 46 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22B046 (WiCAN pid 22B0461, single, 1 response frame)"
+  },
+  {
+   "id": "0x7E5",
+   "data": "03 22 B0 61 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22B061 (WiCAN pid 22B061, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E5",
+   "data": "03 22 B0 56 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22B056 (WiCAN pid 22B0561, single, 1 response frame)"
+  },
+  {
+   "id": "0x7E5",
+   "data": "03 22 B0 42 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22B042 (WiCAN pid 22B042, single, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 B0 46 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]*1.035/10",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 B0 61 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOH",
+     "expr": "[B5:B6]/100",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 B0 56 00 00 00 00",
+   "signals": [
+    {
+     "name": "BATT_TEMP",
+     "expr": "(B5/2)-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 B0 42 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_V",
+     "expr": "[B5:B6]*0.25",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  }
+ ]
+}

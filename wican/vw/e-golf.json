@@ -1,0 +1,53 @@
+{
+ "id": "vw-e-golf",
+ "car_model": "VW: e-Golf",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/vw/e-golf.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;ATSH7E5;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E5",
+   "data": "03 22 02 8C 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22028C (WiCAN pid 22028C1, single, 1 response frame)"
+  },
+  {
+   "id": "0x7E5",
+   "data": "03 22 02 BD 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2202BD (WiCAN pid 2202BD, single, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 02 8C 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "((B5-20)*10)/22",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7ED",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 02 BD 00 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B6:B8]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  }
+ ]
+}

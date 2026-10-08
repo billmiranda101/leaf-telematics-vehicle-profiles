@@ -1,0 +1,33 @@
+{
+ "id": "honda-prologue-2",
+ "car_model": "Honda: Prologue",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/honda/prologue.json by tools/convert_wican.py. WiCAN init: ATSP7;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x00DACBF1",
+   "data": "03 22 2B 43 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 222B43 (WiCAN pid 222B435, multi, 5 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 2B 43 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "B4/255",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

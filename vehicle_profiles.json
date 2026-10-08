@@ -1,0 +1,325 @@
+{
+  "version": 1,
+  "vehicles": [
+    {
+      "id": "nissan_leaf_ze0",
+      "name": "Nissan : Leaf (ZE0/AZE0 2011-2017)",
+      "profile": "nissan/leaf-ze0.json"
+    },
+    {
+      "id": "generic_obd2",
+      "name": "Generic : OBD-II (any vehicle)",
+      "profile": "generic_obd2.json"
+    },
+    {
+      "id": "audi-pq25-pq26-pq35-pq46-mqb-2",
+      "name": "Audi: PQ25/PQ26/PQ35/PQ46/MQB",
+      "profile": "wican/audi/a3.json"
+    },
+    {
+      "id": "byd-atto-2-atto-3-yuan-plus-ev-dolphin-seal-seal-u-sealion-m6-emax-7-denza-d9-denza-n7-sealion-7-ev-eu-version-only-before-2024-10-update-2",
+      "name": "BYD: Atto 2/Atto 3/Yuan Plus EV/Dolphin/Seal/Seal U/Sealion/M6/eMax 7/海豚/Denza D9/Denza N7/Sealion 7 EV (EU version, only before 2024.10 update)",
+      "profile": "wican/byd/byd_202410_update.json"
+    },
+    {
+      "id": "byd-atto-3-2",
+      "name": "BYD: Atto 3",
+      "profile": "wican/byd/atto3.json"
+    },
+    {
+      "id": "byd-dolphin-shark-2",
+      "name": "BYD: Dolphin/Shark",
+      "profile": "wican/byd/dolphin.json"
+    },
+    {
+      "id": "byd-seal-2",
+      "name": "BYD: Seal",
+      "profile": "wican/byd/seal.json"
+    },
+    {
+      "id": "chevrolet-bolt-2",
+      "name": "Chevrolet: Bolt",
+      "profile": "wican/chevrolet/bolt.json"
+    },
+    {
+      "id": "chevrolet-volt-ampera",
+      "name": "Chevrolet: Volt/Ampera",
+      "profile": "wican/chevrolet/volt.json"
+    },
+    {
+      "id": "chrysler-pacifica-2015",
+      "name": "Chrysler: Pacifica 2015+",
+      "profile": "wican/chrysler/pacifica.json"
+    },
+    {
+      "id": "citroen-c-zero-2",
+      "name": "Citroen: C-Zero",
+      "profile": "wican/citroen/c-zero.json"
+    },
+    {
+      "id": "cupra-seat-leon-2",
+      "name": "Cupra: Seat Leon",
+      "profile": "wican/cupra/seat_leon.json"
+    },
+    {
+      "id": "dacia-spring-city-k-ze-2",
+      "name": "Dacia: Spring/CITY K-ZE",
+      "profile": "wican/dacia/spring.json"
+    },
+    {
+      "id": "fiat-600e-2",
+      "name": "Fiat: 600e",
+      "profile": "wican/fiat/600e.json"
+    },
+    {
+      "id": "fiat-e-ulysse-2",
+      "name": "Fiat: e-Ulysse",
+      "profile": "wican/fiat/eulysse.json"
+    },
+    {
+      "id": "ford-focus-rs-mk3-2",
+      "name": "Ford: Focus RS (MK3)",
+      "profile": "wican/ford/focus_rs_mk3.json"
+    },
+    {
+      "id": "ford-transit-north-america-2022-2",
+      "name": "Ford: Transit North America 2022",
+      "profile": "wican/ford/transit.json"
+    },
+    {
+      "id": "genesis-gv60-gv70-ev-g80-electrified-2",
+      "name": "Genesis: GV60/GV70 EV/G80 Electrified",
+      "profile": "wican/genesis/genesis.json"
+    },
+    {
+      "id": "gmc-sierra-2004-2",
+      "name": "GMC: Sierra 2004+",
+      "profile": "wican/gmc/sierra.json"
+    },
+    {
+      "id": "gmc-sierra-ev-2",
+      "name": "GMC: Sierra EV",
+      "profile": "wican/gmc/sierra-ev.json"
+    },
+    {
+      "id": "gwm-ora-good-cat-funky-cat-es11-haomao-ora-03-2",
+      "name": "GWM: Ora Good Cat/Funky Cat/ES11/Haomao/Ora 03",
+      "profile": "wican/gwm/gwm.json"
+    },
+    {
+      "id": "honda-prologue-2",
+      "name": "Honda: Prologue",
+      "profile": "wican/honda/prologue.json"
+    },
+    {
+      "id": "hyundai-ioniq-electric-38kwh-2020-2021-2",
+      "name": "Hyundai: Ioniq Electric 38kWh (2020-2021)",
+      "profile": "wican/hyundai/hyundai_ioniq_electric_38kwh_2021.json"
+    },
+    {
+      "id": "hyundai-ioniq-hybrid-ev-2016-2019-2",
+      "name": "Hyundai: Ioniq Hybrid EV (2016-2019)",
+      "profile": "wican/hyundai/ioniq_hev.json"
+    },
+    {
+      "id": "hyundai-ioniq2017-2",
+      "name": "Hyundai: Ioniq2017",
+      "profile": "wican/hyundai/ioniq-2017.json"
+    },
+    {
+      "id": "hyundai-ioniq5-ioniq6-2021-2024-2",
+      "name": "Hyundai: Ioniq5/Ioniq6 (2021-2024)",
+      "profile": "wican/hyundai/ioniq5-6.json"
+    },
+    {
+      "id": "hyundai-ioniq5-ioniq6-72kwh-2",
+      "name": "Hyundai: Ioniq5/Ioniq6 72kWh",
+      "profile": "wican/hyundai/ioniq5_72kwh.json"
+    },
+    {
+      "id": "hyundai-ioniq5-ioniq6-77kwh-2021-2024-2",
+      "name": "Hyundai: Ioniq5/Ioniq6 77kWh (2021-2024)",
+      "profile": "wican/hyundai/ioniq5-6_77kwh.json"
+    },
+    {
+      "id": "hyundai-ioniq9-2",
+      "name": "Hyundai: Ioniq9",
+      "profile": "wican/hyundai/ioniq9.json"
+    },
+    {
+      "id": "hyundai-kona-2",
+      "name": "Hyundai: Kona",
+      "profile": "wican/hyundai/kona.json"
+    },
+    {
+      "id": "jaguar-i-pace",
+      "name": "Jaguar: I-PACE",
+      "profile": "wican/jaguar/i-pace.json"
+    },
+    {
+      "id": "kgm-torres-evx",
+      "name": "KGM: Torres EVX",
+      "profile": "wican/kmg/torres.json"
+    },
+    {
+      "id": "kia-ev6-2",
+      "name": "Kia: EV6",
+      "profile": "wican/kia/ev6.json"
+    },
+    {
+      "id": "kia-ev6-77kwh-2",
+      "name": "Kia: EV6 77kWh",
+      "profile": "wican/kia/ev6_77kwh.json"
+    },
+    {
+      "id": "kia-niro-ev-2",
+      "name": "Kia: Niro EV",
+      "profile": "wican/kia/niro-ev.json"
+    },
+    {
+      "id": "kia-niro-phev",
+      "name": "Kia: Niro PHEV",
+      "profile": "wican/kia/niro-phev.json"
+    },
+    {
+      "id": "kia-niro-soul-2",
+      "name": "Kia: Niro/Soul",
+      "profile": "wican/kia/nirosoulkona-ev.json"
+    },
+    {
+      "id": "maxus-t90-eunic5-eunic6-eunic9-ev30-eg10-edeliver3-edeliver9-2",
+      "name": "Maxus: T90/EUNIC5/EUNIC6/EUNIC9/EV30/EG10/eDeliver3/eDeliver9",
+      "profile": "wican/maxus/t90.json"
+    },
+    {
+      "id": "mazda-ez-6-6e-2",
+      "name": "Mazda: EZ-6/6e",
+      "profile": "wican/mazda/ez6.json"
+    },
+    {
+      "id": "mg-mg5-marvel-zs-2",
+      "name": "MG: MG5/Marvel/ZS",
+      "profile": "wican/mg/mg5-marvel-zs.json"
+    },
+    {
+      "id": "mitsubishi-imiev-outlander-phev-2",
+      "name": "Mitsubishi: iMiEV/Outlander-PHEV",
+      "profile": "wican/mitsubishi/imiev.json"
+    },
+    {
+      "id": "mitsubishi-outlander-phev-2023-2",
+      "name": "Mitsubishi: Outlander-PHEV 2023",
+      "profile": "wican/mitsubishi/outlander.json"
+    },
+    {
+      "id": "mitsubishi-outlander-phev-2025-2",
+      "name": "Mitsubishi: Outlander-PHEV 2025",
+      "profile": "wican/mitsubishi/outlander-2025.json"
+    },
+    {
+      "id": "nissan-ariya-2",
+      "name": "Nissan : Ariya",
+      "profile": "wican/nissan/ariya.json"
+    },
+    {
+      "id": "nissan-leaf-ze1-2",
+      "name": "Nissan : leaf-ze1",
+      "profile": "wican/nissan/leaf-ze1.json"
+    },
+    {
+      "id": "opel-ampere-e",
+      "name": "Opel: Ampere-E",
+      "profile": "wican/opel/ampere-e.json"
+    },
+    {
+      "id": "opel-ampere-e-2019",
+      "name": "Opel: Ampere-E 2019",
+      "profile": "wican/opel/ampere-e-2019.json"
+    },
+    {
+      "id": "opel-astra-2",
+      "name": "Opel: Astra",
+      "profile": "wican/opel/astra.json"
+    },
+    {
+      "id": "opel-eobd-2004-present-2",
+      "name": "Opel: EOBD (2004 - present)",
+      "profile": "wican/opel/opel.json"
+    },
+    {
+      "id": "peugeot-e-208-2",
+      "name": "Peugeot: e-208",
+      "profile": "wican/peugeot/e-208.json"
+    },
+    {
+      "id": "peugeot-ion-2",
+      "name": "Peugeot: iON",
+      "profile": "wican/peugeot/ion.json"
+    },
+    {
+      "id": "renault-zoe-r110-r90",
+      "name": "Renault Zoe R110/R90",
+      "profile": "wican/renault/renault zoe r110.json"
+    },
+    {
+      "id": "renault-ariya-scenic-ev-e-tech-renault-5-e-tech-renault-4-e-tech-megane-e-tech-gsr2-2024-master-ev-e-tech-2",
+      "name": "Renault: Ariya/Scenic EV E-TECH/Renault 5 E-TECH/Renault 4 E-TECH/Megane E-TECH GSR2 2024/Master EV E-TECH",
+      "profile": "wican/renault/megane.json"
+    },
+    {
+      "id": "renault-kangoo-z-e",
+      "name": "Renault: Kangoo Z.E.",
+      "profile": "wican/renault/kangoo-ze.json"
+    },
+    {
+      "id": "renault-twizy-2",
+      "name": "Renault: Twizy",
+      "profile": "wican/renault/twizy.json"
+    },
+    {
+      "id": "smart-1",
+      "name": "Smart: #1",
+      "profile": "wican/smart/#1.json"
+    },
+    {
+      "id": "smart-eq-2",
+      "name": "Smart: EQ",
+      "profile": "wican/smart/eq.json"
+    },
+    {
+      "id": "subaru-outback-2-5na-gen6-2",
+      "name": "Subaru Outback 2.5na Gen6",
+      "profile": "wican/subaru/outback_gen6.json"
+    },
+    {
+      "id": "toyota-bz4x-2022-2025-2",
+      "name": "Toyota: bZ4X 2022-2025",
+      "profile": "wican/toyota/bz4x.json"
+    },
+    {
+      "id": "toyota-hilux-2",
+      "name": "Toyota: Hilux",
+      "profile": "wican/toyota/hilux.json"
+    },
+    {
+      "id": "toyota-rav4-2",
+      "name": "Toyota: Rav4",
+      "profile": "wican/toyota/rav4.json"
+    },
+    {
+      "id": "vw-e-golf",
+      "name": "VW: e-Golf",
+      "profile": "wican/vw/e-golf.json"
+    },
+    {
+      "id": "vw-e-up-2",
+      "name": "VW: e-Up",
+      "profile": "wican/vw/e-up.json"
+    },
+    {
+      "id": "xpeng-p5-p7-g6-g9-x9-2",
+      "name": "Xpeng: P5/P7/G6/G9/X9",
+      "profile": "wican/xpeng/xpeng_g6.json"
+    }
+  ]
+}

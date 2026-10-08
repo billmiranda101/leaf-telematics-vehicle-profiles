@@ -1,0 +1,76 @@
+{
+ "id": "fiat-600e-2",
+ "car_model": "Fiat: 600e",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/fiat/600e.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;ATSH79B;ATFCSH79B;ATFCSD300000;ATFCSM1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x6B4",
+   "data": "03 22 D4 10 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 22D410 (WiCAN pid 22D4101, single, 1 response frame)",
+   "flow_control_id": "0x694"
+  },
+  {
+   "id": "0x6B4",
+   "data": "03 22 D8 60 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 22D860 (WiCAN pid 22D8601, single, 1 response frame)",
+   "flow_control_id": "0x694"
+  },
+  {
+   "id": "0x6B4",
+   "data": "03 22 D8 15 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 22D815 (WiCAN pid 22D8151, single, 1 response frame)",
+   "flow_control_id": "0x694"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x694",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 D4 10 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]/512",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x694",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 D8 60 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOH",
+     "expr": "[B6:B7]/16",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x694",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 D8 15 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_V",
+     "expr": "[B5:B6]/16",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  }
+ ]
+}

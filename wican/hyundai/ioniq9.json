@@ -1,0 +1,206 @@
+{
+ "id": "hyundai-ioniq9-2",
+ "car_model": "Hyundai: Ioniq9",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/hyundai/ioniq9.json by tools/convert_wican.py. WiCAN init: ATSP6;ATSH7E4;ATST96;ATFCSH7E4;ATFCSD300000;ATFCSM0;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM0.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E4",
+   "data": "03 22 01 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 220101 (WiCAN pid 2201019, multi, 9 response frames)"
+  },
+  {
+   "id": "0x7E4",
+   "data": "03 22 01 05 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 220105 (WiCAN pid 2201057, multi, 7 response frames)"
+  },
+  {
+   "id": "0x7C6",
+   "data": "03 22 B0 02 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 22B002 (WiCAN pid 22B002, multi, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 01 01 00 00 00",
+   "signals": [
+    {
+     "name": "HV_A",
+     "expr": "(65536-([B14:B15]))/10",
+     "unit": "A",
+     "class": "current"
+    },
+    {
+     "name": "HV_C_V_MAX",
+     "expr": "B27/50",
+     "unit": "V",
+     "class": "voltage"
+    },
+    {
+     "name": "HV_C_V_MAX_NO",
+     "expr": "B28",
+     "unit": "none"
+    },
+    {
+     "name": "HV_C_V_MIN",
+     "expr": "B29/50",
+     "unit": "V",
+     "class": "voltage"
+    },
+    {
+     "name": "HV_C_V_MIN_NO",
+     "expr": "B30",
+     "unit": "none"
+    },
+    {
+     "name": "HV_T_1",
+     "expr": "B20",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_2",
+     "expr": "B21",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_3",
+     "expr": "B22",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_4",
+     "expr": "B23",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_5",
+     "expr": "B24",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_I",
+     "expr": "B26",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_MAX",
+     "expr": "B18",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_T_MIN",
+     "expr": "B19",
+     "unit": "°C",
+     "class": "temperature"
+    },
+    {
+     "name": "HV_V",
+     "expr": "[B16:B17]/10",
+     "unit": "V",
+     "class": "voltage"
+    },
+    {
+     "name": "HV_W",
+     "expr": "([B16:B17]/10)*((65536-([B14:B15]))/10)",
+     "unit": "W",
+     "class": "power"
+    },
+    {
+     "name": "KWH_CHARGED",
+     "expr": "([B42:B43]*65536+[B44:B45])/10",
+     "unit": "kWh",
+     "class": "energy"
+    },
+    {
+     "name": "LV_V",
+     "expr": "B33*0.1",
+     "unit": "V",
+     "class": "battery"
+    },
+    {
+     "name": "POWER_MAX",
+     "expr": "[B11:B12]/100",
+     "unit": "kW",
+     "class": "power"
+    },
+    {
+     "name": "REGEN_MAX",
+     "expr": "[B9:B10]/100",
+     "unit": "kW",
+     "class": "power"
+    },
+    {
+     "name": "SOC",
+     "expr": "B8/2",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x7EC",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 01 05 00 00 00",
+   "signals": [
+    {
+     "name": "HV_C_D_MAX_NO",
+     "expr": "B31",
+     "unit": "none"
+    },
+    {
+     "name": "HV_C_D_MIN",
+     "expr": "[B32:B33]/10",
+     "unit": "%"
+    },
+    {
+     "name": "HV_C_D_MIN_NO",
+     "expr": "B34",
+     "unit": "none"
+    },
+    {
+     "name": "SOC_D",
+     "expr": "B35/2",
+     "unit": "%",
+     "class": "battery"
+    },
+    {
+     "name": "SOH",
+     "expr": "[B29:B30]/10",
+     "unit": "%"
+    }
+   ]
+  },
+  {
+   "id": "0x7CE",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 B0 02 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B10:B12]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  }
+ ]
+}

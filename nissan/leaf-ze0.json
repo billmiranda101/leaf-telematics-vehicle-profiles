@@ -1,0 +1,188 @@
+{
+  "id": "nissan_leaf_ze0",
+  "car_model": "Nissan : Leaf (ZE0/AZE0 2011-2017)",
+  "comment": "Data-driven port of the ESP32 firmware decoder src/battery/NISSAN-LEAF-BATTERY.cpp/.h. Covers ZE0 (2011-2012), AZE0 (2013-2017) and passively detects ZE1 (2018+). BEHAVIOUR NOT EXPRESSIBLE IN THIS SCHEMA (firmware must implement in code, see README caveats): (1) all TX and the UDS poll are gated on battery_can_alive, set when the first 0x5BC frame is received; (2) LeafSpy coexistence: receiving any frame on 0x79B suspends polling for 10 s (C++ stop_battery_query / hold_off_with_polling_10seconds), and polling starts disabled for the first ~30 s after boot; (3) the 0x79B group byte rotates round-robin through [01,02,04,06,83,84,90], one group per 10 s tick (C++ pre-increments the index so the first poll is group 0x02); (4) generation detection: 0x59E received => AZE0, any of 0x380/0x5EB/0x5BF/0x1ED/0x1C2 => ZE1 (default ZE0); generation selects which temperature signals are authoritative and whether the ZE1-only keep-alive frames are sent; (5) C++ application-layer safety logic in update_values() (GIDS<10 => SOC 0 and discharge 0; full-charge flag => charge 0; relay-cut => both 0) is NOT part of the decode and is not ported; (6) group 0x06 balancing shunts (96 bits) and groups 0x83/0x84/0x90 part/serial/BMS-ID strings are omitted: the schema has no bit-array or string signal type; (7) Temp_fromRAW_to_F() piecewise conversion is not expressible: TEMP_RAW_* are the raw 16-bit values, see README. Omitted rx ids that carry no decoded signals in the C++: 0x59E, 0x380, 0x5EB, 0x5BF, 0x1ED, 0x1C2 (generation detection only), 0x79B (LeafSpy detector only).",
+  "bus_speed": 500000,
+  "tx": [
+    {
+      "id": "0x1D4",
+      "data": "6E 6E 00 04 07 46 E0 12",
+      "interval_ms": 10,
+      "counter": {"byte": 4, "modulus": 4},
+      "comment": "C++ 10 ms slot, switch(mprun10) (transmit_can()). The rolling counter n=0..3 lives in bits 6-7 of byte 4, NOT as a raw value: byte4 = 0x07|(n<<6); byte 8 is hardcoded per step: n=0->0x12, n=1->0xD5, n=2->0x19, n=3->0xDE. Verified: neither leaf_crc nor additive sum8 reproduces byte 8. Firmware must implement this entry as a 4-step rotating frame template; 'data' shows step 0."
+    },
+    {
+      "id": "0x1F2",
+      "data": "10 64 00 B0 00 1E 00 8F",
+      "interval_ms": 10,
+      "comment": "C++ 10 ms slot, 20-step cycle switch(mprun10r % 20). The C++ only special-cases steps 0-4 and falls through to 'default' for steps 5-19 (which re-asserts the template shown in 'data'). Deviations from the template: step1 B7=0x01 B8=0x80; step2 B7=0x02 B8=0x81; step3 B7=0x03 B8=0x82. Equivalent closed form for byte 8: B8 = 0x80|((B7-1)&0x0F) (holds for B7=0..3). This is a fixed 20-step pattern, not an incrementing counter - do not model as counter."
+    },
+    {
+      "id": "0x50B",
+      "data": "00 00 06 C0 00 00 00 00",
+      "interval_ms": 100,
+      "comment": "C++ DLC=7 (7th byte of 'data' is padding). Byte 7 (u8[6]) is dynamic in the C++: set to 0x20 when battery_Batt_Heater_Mail_Send_Request (decoded from 0x5C0 B2&1) is true, else 0x00. Firmware must OR 0x20 into B7 when the 0x5C0 heater-mail flag is set. Sent on all generations."
+    },
+    {
+      "id": "0x50C",
+      "data": "00 00 00 00 5D C8 00 00",
+      "interval_ms": 100,
+      "counter": {"byte": 4, "modulus": 4},
+      "comment": "C++ DLC=6 (bytes 7-8 of 'data' are padding). 100 ms slot, switch(mprun100): byte 4 = raw counter n=0..3 (matches 'counter'), but bytes 5-6 are hardcoded per step: n=0->(0x5D,0xC8), n=1->(0xB2,0x31), n=2->(0x5D,0x63), n=3->(0xB2,0x9A). Verified: not derivable from leaf_crc/sum8. 'data' shows step 0."
+    },
+    {
+      "id": "0x355",
+      "data": "00 00 00 00 10 00 40 00",
+      "interval_ms": 40,
+      "comment": "ZE1 (2018+) ONLY: C++ sends this only when LEAF_battery_Type == ZE1_BATTERY. Static. Skip on ZE0/AZE0."
+    },
+    {
+      "id": "0x3B8",
+      "data": "7F E8 01 07 FF 00 00 00",
+      "interval_ms": 100,
+      "counter": {"byte": 3, "modulus": 15},
+      "comment": "ZE1 (2018+) ONLY (see 0x355). C++ DLC=5 (bytes 6-8 padding). Byte 3 = raw rolling counter 0..14; the C++ pre-increments so the first transmitted value is 1 (matches 'data'). Byte 2 alternates 0xE8/0xC8 on every transmission (flip_3B8) starting with 0xE8 - firmware must toggle it."
+    },
+    {
+      "id": "0x5C5",
+      "data": "40 01 2F 5E 00 00 00 00",
+      "interval_ms": 100,
+      "comment": "ZE1 (2018+) ONLY (see 0x355). Static."
+    },
+    {
+      "id": "0x626",
+      "data": "02 00 FF 1D 20 00 00 00",
+      "interval_ms": 100,
+      "comment": "ZE1 (2018+) ONLY (see 0x355). C++ DLC=6 (bytes 7-8 padding). Static."
+    },
+    {
+      "id": "0x5EC",
+      "data": "00 00 00 00 00 00 00 00",
+      "interval_ms": 500,
+      "comment": "ZE1 (2018+) ONLY (see 0x355). C++ DLC=1 (bytes 2-8 padding). Static."
+    }
+  ],
+  "poll": [
+    {
+      "id": "0x79B",
+      "data": "02 21 01 00 00 00 00 00",
+      "interval_ms": 10000,
+      "flow_control": "30 01 00 FF FF FF FF FF",
+      "comment": "UDS group request (C++ LEAF_GROUP_REQUEST). Byte 3 = group id; the C++ rotates it round-robin through PIDgroups = [0x01,0x02,0x04,0x06,0x83,0x84,0x90], one group per 10 s tick, index pre-incremented so the first poll is group 0x02. A static profile can only ever fetch group 0x01 - firmware must rotate B3. flow_control is the C++ LEAF_NEXT_LINE_REQUEST, sent on EVERY received 0x7BB frame while a response is arriving (not just once after the first frame). Suppressed entirely while LeafSpy is detected and until battery_can_alive - see top-level comment."
+    }
+  ],
+  "rx": [
+    {
+      "id": "0x1DB",
+      "checksum": "leaf_crc",
+      "signals": [
+        {"name": "HV_A", "expr": "(([B1:B2]>>5)-((([B1:B2]>>5)&1024)>>10)*2048)*0.5", "unit": "A", "comment": "11-bit signed, 0.5 A/bit. C++: battery_Current2 = (d[0]<<3)|((d[1]&0xE0)>>5); if (battery_Current2 & 0x0400) battery_Current2 |= 0xF800. The expr computes v-2048 when bit 10 is set (sign extension without a conditional)."},
+        {"name": "HV_V", "expr": "([B3:B4]>>6)*0.5", "unit": "V", "comment": "10-bit, 0.5 V/bit. C++: (d[2]<<2)|((d[3]&0xC0)>>6); value 0x3FF means 'measurement unavailable' and is ignored by the C++ - not expressible here."},
+        {"name": "RELAY_CUT_REQUEST", "expr": "(B2&24)>>3", "unit": "", "comment": "C++: (d[1] & 0x18) >> 3."},
+        {"name": "FAILSAFE_STATUS", "expr": "B2&7", "unit": "", "comment": "C++: d[1] & 0x07."},
+        {"name": "MAIN_RELAY_ON", "expr": "(B4&32)>>5", "unit": "", "comment": "C++: (d[3] & 0x20) != 0."},
+        {"name": "FULL_CHARGE_FLAG", "expr": "(B4&16)>>4", "unit": "", "comment": "C++: (d[3] & 0x10) != 0."},
+        {"name": "INTERLOCK", "expr": "(B4&8)>>3", "unit": "", "comment": "C++: (d[3] & 0x08) != 0."}
+      ]
+    },
+    {
+      "id": "0x1DC",
+      "checksum": "leaf_crc",
+      "signals": [
+        {"name": "MAX_DISCHARGE_KW", "expr": "([B1:B2]>>6)*0.25", "unit": "kW", "comment": "C++: ((d[0]<<2)|(d[1]>>6)) / 4.0. 10-bit, 0.25 kW/bit."},
+        {"name": "MAX_CHARGE_KW", "expr": "(([B2:B3]>>4)&1023)*0.25", "unit": "kW", "comment": "C++: (((d[1]&0x3F)<<4)|(d[2]>>4)) / 4.0. 10-bit, 0.25 kW/bit."},
+        {"name": "MAX_CHARGER_KW", "expr": "(([B3:B4]>>2)&1023)*0.1-10", "unit": "kW", "comment": "C++: battery_MAX_POWER_FOR_CHARGER = (((d[2]&0x0F)<<6)|(d[3]>>2)) / 10.0 - 10."}
+      ]
+    },
+    {
+      "id": "0x55B",
+      "checksum": "leaf_crc",
+      "signals": [
+        {"name": "SOC", "expr": "([B1:B2]>>6)*0.1", "unit": "%", "comment": "C++: (d[0]<<2)|(d[1]>>6), stored as 0-1000 (0.1 %/bit). Value 0x3FF means unavailable and is ignored by the C++ - not expressible here."},
+        {"name": "CAPACITY_EMPTY", "expr": "(B7&128)>>7", "unit": "", "comment": "C++: (d[6] & 0x80) != 0."}
+      ]
+    },
+    {
+      "id": "0x5BC",
+      "mask": "00 00 00 00 00 10 00 00",
+      "match": "00 00 00 00 00 00 00 00",
+      "comment": "Mux bit 0x10 of byte 6 clear => current-GIDS frame (C++: isMax = (d[5] & 0x10); gids = (d[0]<<2)|((d[1]&0xC0)>>6)). No CRC check in the C++ for 0x5BC. Receiving this id sets battery_can_alive in the C++ (gates all TX/polling).",
+      "signals": [
+        {"name": "GIDS", "expr": "[B1:B2]>>6", "unit": "", "comment": "10-bit raw GIDS (1 GID = 77 Wh). C++: battery_GIDS."},
+        {"name": "WH_REMAINING", "expr": "([B1:B2]>>6)*77", "unit": "Wh", "comment": "C++: battery_Wh_Remaining = gids * WH_PER_GID (77)."},
+        {"name": "SOH", "expr": "B5>>1", "unit": "%", "comment": "C++: uint8_t soh = d[4] >> 1; applied only when != 0 (not expressible)."},
+        {"name": "TEMP_AVG_C", "expr": "B4-40", "unit": "degC", "comment": "ZE0 (2011-2012) only: C++ uses this only when gen == ZE0_BATTERY (battery_AverageTemperature = d[3] - 40)."}
+      ]
+    },
+    {
+      "id": "0x5BC",
+      "mask": "00 00 00 00 00 10 00 00",
+      "match": "00 00 00 00 00 10 00 00",
+      "comment": "Mux bit 0x10 of byte 6 set => max-GIDS frame (capacity of a new pack).",
+      "signals": [
+        {"name": "MAX_GIDS", "expr": "[B1:B2]>>6", "unit": "", "comment": "C++: battery_Max_GIDS = gids when isMax."}
+      ]
+    },
+    {
+      "id": "0x5C0",
+      "mask": "C0 00 00 00 00 00 00 00",
+      "match": "40 00 00 00 00 00 00 00",
+      "comment": "Mux = byte1 >> 6 == 1 (C++: uint8_t mux = d[0] >> 6; if (mux == 1) MAX temperature). AZE0 (2013-2017) only.",
+      "signals": [
+        {"name": "TEMP_MAX_C", "expr": "B3*0.5-40", "unit": "degC", "comment": "C++: battery_HistData_Temperature_MAX = (d[2]/2) - 40."}
+      ]
+    },
+    {
+      "id": "0x5C0",
+      "mask": "C0 00 00 00 00 00 00 00",
+      "match": "C0 00 00 00 00 00 00 00",
+      "comment": "Mux == 3 => MIN temperature (C++: if (mux == 3)). AZE0 only.",
+      "signals": [
+        {"name": "TEMP_MIN_C", "expr": "B3*0.5-40", "unit": "degC", "comment": "C++: battery_HistData_Temperature_MIN = (d[2]/2) - 40."}
+      ]
+    },
+    {
+      "id": "0x5C0",
+      "comment": "Unmuxed heater-status fields, parsed by the C++ on every 0x5C0 frame regardless of mux.",
+      "signals": [
+        {"name": "HEAT_EXIST", "expr": "B5&1", "unit": "", "comment": "C++: battery_HeatExist = d[4] & 0x01."},
+        {"name": "HEATING_STOP", "expr": "(B1&16)>>4", "unit": "", "comment": "C++: (d[0] & 0x10) != 0."},
+        {"name": "HEATING_START", "expr": "(B1&32)>>5", "unit": "", "comment": "C++: (d[0] & 0x20) != 0."},
+        {"name": "HEATER_MAIL_SEND_REQUEST", "expr": "B2&1", "unit": "", "comment": "C++: battery_Batt_Heater_Mail_Send_Request = d[1] & 0x01; fed back into TX 0x50B byte 7 (0x20/0x00)."}
+      ]
+    },
+    {
+      "id": "0x7BB",
+      "isotp": true,
+      "mask": "00 00 00 FF 00 00 00 00",
+      "match": "00 00 00 01 00 00 00 00",
+      "comment": "UDS group 0x01 response. mask/match are evaluated against the FIRST frame of the response (flow-control frame, PCI 0x1n): byte 4 of it is the group id (C++: if (d[0] == 0x10) group_7bb = d[3]). Assembled-payload byte refs per README: FF contributes its bytes 2..7, each consecutive frame its bytes 1..7.",
+      "signals": [
+        {"name": "INSULATION_KOHM", "expr": "[B25:B26]", "unit": "kOhm", "comment": "C++: frame with PCI 0x23 (3rd consecutive frame): battery_insulation = (d[5]<<8)|d[6] -> payload bytes 25-26."},
+        {"name": "HX", "expr": "[B31:B32]/102.4", "unit": "mOhm", "comment": "C++: frame with PCI 0x24 (4th consecutive frame): battery_HX = ((d[4]<<8)|d[5]) / 102.4 -> payload bytes 31-32. Note: the C++ stores the result in a uint16_t, silently truncating the fraction."}
+      ]
+    },
+    {
+      "id": "0x7BB",
+      "isotp": true,
+      "mask": "00 00 00 FF 00 00 00 00",
+      "match": "00 00 00 02 00 00 00 00",
+      "comment": "UDS group 0x02 response: 96 cell voltages. In the C++ the odd/even consecutive-frame split-cell handling (low byte of cell N+1 carried into the next frame) is byte-for-byte equivalent to one contiguous big-endian byte stream starting at first-frame byte 4, so it extracts as a plain array over the assembled payload.",
+      "signals": [
+        {"name": "CELL_VOLTAGES_MV", "array": {"first_byte": 3, "count": 96, "bytes_per": 2, "factor": 1, "order": "big"}, "unit": "mV", "comment": "Cell 1 = payload B3:B4 ... cell 96 = payload B193:B194. C++ stores the raw 16-bit value directly as mV (battery_cell_voltages[i])."}
+      ]
+    },
+    {
+      "id": "0x7BB",
+      "isotp": true,
+      "mask": "00 00 00 FF 00 00 00 00",
+      "match": "00 00 00 04 00 00 00 00",
+      "comment": "UDS group 0x04 response: raw temperature sensor values. The C++ never populates temp_raw_2 (code commented out), so only 3 of 4 sensors are exposed. Temp_fromRAW_to_F() is a piecewise-linear map that cannot be expressed in the expr grammar - firmware must implement it (see README); the C++ then converts degF to degC via (F-320)*5/9.",
+      "signals": [
+        {"name": "TEMP_RAW_1", "expr": "[B3:B4]", "unit": "raw", "comment": "C++ first frame (PCI 0x10): battery_temp_raw_1 = (d[4]<<8)|d[5] -> payload B3:B4."},
+        {"name": "TEMP_RAW_3", "expr": "[B9:B10]", "unit": "raw", "comment": "C++ consecutive frame PCI 0x21: battery_temp_raw_3 = (d[3]<<8)|d[4] -> payload B9:B10."},
+        {"name": "TEMP_RAW_4", "expr": "[B13:B14]", "unit": "raw", "comment": "C++ consecutive frame PCI 0x21: battery_temp_raw_4 = (d[6]<<8)|d[7] -> payload B13:B14."}
+      ]
+    }
+  ]
+}

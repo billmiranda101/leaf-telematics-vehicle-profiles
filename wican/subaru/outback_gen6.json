@@ -1,0 +1,112 @@
+{
+ "id": "subaru-outback-2-5na-gen6-2",
+ "car_model": "Subaru Outback 2.5na Gen6",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/subaru/outback_gen6.json by tools/convert_wican.py. WiCAN init: ATSP6;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7A3",
+   "data": "03 22 10 D2 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2210D2 (WiCAN pid 2210D2, single, -1 response frames)"
+  },
+  {
+   "id": "0x753",
+   "data": "03 22 10 22 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 221022 (WiCAN pid 221022, single, -1 response frames)"
+  },
+  {
+   "id": "0x7A2",
+   "data": "03 22 12 ED 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2212ED (WiCAN pid 2212ED, single, -1 response frames)"
+  },
+  {
+   "id": "0x7A2",
+   "data": "03 22 13 22 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 221322 (WiCAN pid 221322, single, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7AB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 10 D2 00 00 00 00",
+   "signals": [
+    {
+     "name": "TRAN_F_TEMP",
+     "expr": "B5-50",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x75B",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 10 22 00 00 00 00",
+   "signals": [
+    {
+     "name": "TYRE_P_FL",
+     "expr": "(B5/5)",
+     "unit": "psi",
+     "class": "pressure"
+    },
+    {
+     "name": "TYRE_P_FR",
+     "expr": "(B6/5)",
+     "unit": "psi",
+     "class": "pressure"
+    },
+    {
+     "name": "TYRE_P_RL",
+     "expr": "(B7/5)",
+     "unit": "psi",
+     "class": "pressure"
+    },
+    {
+     "name": "TYRE_P_RR",
+     "expr": "(B8/5)",
+     "unit": "psi",
+     "class": "pressure"
+    }
+   ]
+  },
+  {
+   "id": "0x7AA",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 12 ED 00 00 00 00",
+   "signals": [
+    {
+     "name": "MAF",
+     "expr": "([B5:B6]/100)",
+     "unit": "g/s"
+    }
+   ]
+  },
+  {
+   "id": "0x7AA",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 13 22 00 00 00 00",
+   "signals": [
+    {
+     "name": "AC_C_C",
+     "expr": "(([B5:B8]*10)/10000)-2000",
+     "unit": "A",
+     "class": "current"
+    }
+   ]
+  }
+ ]
+}

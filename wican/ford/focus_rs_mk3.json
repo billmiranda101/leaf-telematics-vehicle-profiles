@@ -1,0 +1,262 @@
+{
+ "id": "ford-focus-rs-mk3-2",
+ "car_model": "Ford: Focus RS (MK3)",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/ford/focus_rs_mk3.json by tools/convert_wican.py. WiCAN init: ATE0;ATL0;ATH0;ATR1;ATST32;ATSP6;ATCAF1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x726",
+   "data": "03 22 40 28 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224028 (WiCAN pid 224028, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 28 13 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222813 (WiCAN pid 222813, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 28 16 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222816 (WiCAN pid 222816, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 28 14 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222814 (WiCAN pid 222814, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 28 15 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 222815 (WiCAN pid 222815, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E0",
+   "data": "03 22 F4 05 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22F405 (WiCAN pid 22F405, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E0",
+   "data": "03 22 F4 0F 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22F40F (WiCAN pid 22F40F, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E0",
+   "data": "03 22 03 CA 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2203CA (WiCAN pid 2203CA, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 DD 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22DD01 (WiCAN pid 22dd01, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 DD 04 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22DD04 (WiCAN pid 22dd04, single, -1 response frames)"
+  },
+  {
+   "id": "0x726",
+   "data": "03 22 40 29 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 224029 (WiCAN pid 224029, single, -1 response frames)"
+  },
+  {
+   "id": "0x7E0",
+   "data": "03 22 F4 2F 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22F42F (WiCAN pid 22f42f, single, -1 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 40 28 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "B5",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 28 13 00 00 00 00",
+   "signals": [
+    {
+     "name": "TYRE_P_FL",
+     "expr": "([B5:B6]/10)/2.036",
+     "unit": "psi",
+     "class": "pressure"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 28 16 00 00 00 00",
+   "signals": [
+    {
+     "name": "TYRE_P_RL",
+     "expr": "([B5:B6]/10)/2.036",
+     "unit": "psi",
+     "class": "pressure"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 28 14 00 00 00 00",
+   "signals": [
+    {
+     "name": "TYRE_P_FR",
+     "expr": "([B5:B6]/10)/2.036",
+     "unit": "psi",
+     "class": "pressure"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 28 15 00 00 00 00",
+   "signals": [
+    {
+     "name": "TYRE_P_RR",
+     "expr": "([B5:B6]/10)/2.036",
+     "unit": "psi",
+     "class": "pressure"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 F4 05 00 00 00 00",
+   "signals": [
+    {
+     "name": "COOLANT_TMP",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 F4 0F 00 00 00 00",
+   "signals": [
+    {
+     "name": "INTAKE_AIR_TMP",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 03 CA 00 00 00 00",
+   "signals": [
+    {
+     "name": "INTAKE_AIR_TEMP_2",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 DD 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "ODOMETER",
+     "expr": "[B5:B7]",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 DD 04 00 00 00 00",
+   "signals": [
+    {
+     "name": "T_CAB",
+     "expr": "(B5*10/9)-45",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x72E",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 40 29 00 00 00 00",
+   "signals": [
+    {
+     "name": "BATT_TEMP",
+     "expr": "B5-40",
+     "unit": "°C",
+     "class": "temperature"
+    }
+   ]
+  },
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 F4 2F 00 00 00 00",
+   "signals": [
+    {
+     "name": "FUEL",
+     "expr": "(B5/255)*100",
+     "unit": "%"
+    }
+   ]
+  }
+ ]
+}

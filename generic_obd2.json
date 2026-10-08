@@ -1,0 +1,91 @@
+{
+  "id": "generic_obd2",
+  "car_model": "Generic : OBD-II (any vehicle)",
+  "comment": "Minimal generic OBD-II profile: mode-01 PID polling on the functional broadcast address 0x7DF with single-frame responses decoded from 0x7E8 (ECU #1). BYTE OFFSETS (single-frame response): B1 = PCI byte (ISO-15765 single-frame header, value = number of following data bytes, e.g. 0x03), B2 = 0x41 (mode 01 + 0x40), B3 = PID, B4.. = data bytes (A, B, ...). The mask/match on B2:B3 (0x41:PID) also rejects multi-frame responses (their first frame has PCI 0x1n at B1 and carries 0x41 at B3), which is intentional: for the rare multi-frame response the assembled payload = data only, i.e. mode at B1, PID at B2, data byte A at B3 - firmware would need shifted exprs for those. All five requests share 0x7DF; with interval_ms 1000 they fire in the same tick - firmware may round-robin them to spread bus load. flow_control is omitted: these PIDs are almost always answered single-frame; add '30 00 00 00 00 00 00 00' if an ECU answers multi-frame. Standard scalings: speed = A km/h; RPM = (256*A+B)/4; coolant = A-40 degC; throttle = A*100/255 %; fuel = A*100/255 %.",
+  "bus_speed": 500000,
+  "tx": [],
+  "poll": [
+    {
+      "id": "0x7DF",
+      "data": "02 01 0D 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0D - vehicle speed."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0C 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0C - engine RPM."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 05 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x05 - coolant temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 11 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x11 - throttle position."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2F 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x2F - fuel tank level."
+    }
+  ],
+  "rx": [
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0D 00 00 00 00 00",
+      "comment": "Single-frame response to 010D: B1 = PCI (0x03), B2 = 0x41, B3 = 0x0D, B4 = data byte A.",
+      "signals": [
+        {"name": "SPEED", "expr": "B4", "unit": "km/h"}
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0C 00 00 00 00 00",
+      "comment": "Single-frame response to 010C: B4 = data byte A (high), B5 = data byte B (low); RPM = (256*A+B)/4 = [B4:B5]*0.25.",
+      "signals": [
+        {"name": "ENGINE_RPM", "expr": "[B4:B5]*0.25", "unit": "rpm"}
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 05 00 00 00 00 00",
+      "comment": "Single-frame response to 0105: B4 = data byte A; coolant = A-40 degC.",
+      "signals": [
+        {"name": "COOLANT_TMP", "expr": "B4-40", "unit": "degC"}
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 11 00 00 00 00 00",
+      "comment": "Single-frame response to 0111: B4 = data byte A; throttle = A*100/255 %.",
+      "signals": [
+        {"name": "THROTTLE", "expr": "B4*100/255", "unit": "%"}
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2F 00 00 00 00 00",
+      "comment": "Single-frame response to 012F: B4 = data byte A; fuel level = A*100/255 %.",
+      "signals": [
+        {"name": "FUEL_LEVEL", "expr": "B4*100/255", "unit": "%"}
+      ]
+    }
+  ]
+}

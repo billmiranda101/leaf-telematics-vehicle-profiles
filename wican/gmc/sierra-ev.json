@@ -1,0 +1,142 @@
+{
+ "id": "gmc-sierra-ev-2",
+ "car_model": "GMC: Sierra EV",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/gmc/sierra-ev.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST64;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 27 C6 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2227C6 (WiCAN pid 2227C6, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  },
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 27 AF 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2227AF (WiCAN pid 2227AF, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  },
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 00 46 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 220046 (WiCAN pid 220046, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  },
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 27 C7 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2227C7 (WiCAN pid 2227C7, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  },
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 54 01 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 225401 (WiCAN pid 225401, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  },
+  {
+   "id": "0x14DACBF1",
+   "data": "03 22 27 C0 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2227C0 (WiCAN pid 2227C0, single, -1 response frames)",
+   "flow_control_id": "0x142AF1CB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 27 C6 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B5:B6]/655.35",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 27 AF 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_CAPACITY_R",
+     "expr": "[B5:B6]/100",
+     "unit": "kWh",
+     "class": "energy"
+    }
+   ]
+  },
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 00 46 00 00 00 00",
+   "signals": [
+    {
+     "name": "TMP_A",
+     "expr": "(B5-40)*1.8+32",
+     "unit": "°C"
+    }
+   ]
+  },
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 27 C7 00 00 00 00",
+   "signals": [
+    {
+     "name": "RANGE",
+     "expr": "[B5:B7]/103",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  },
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 54 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "CHARGER_DC_PWR",
+     "expr": "[B5:B6]/4350",
+     "unit": "kW",
+     "class": "power"
+    }
+   ]
+  },
+  {
+   "id": "0x142AF1CB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 27 C0 00 00 00 00",
+   "signals": [
+    {
+     "name": "DIST_SINCE_FULL_CHARGE",
+     "expr": "[B5:B7]/16.09344",
+     "unit": "km",
+     "class": "distance"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "id": "nissan-leaf-ze1-2",
+ "car_model": "Nissan : leaf-ze1",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/nissan/leaf-ze1.json by tools/convert_wican.py. WiCAN init: ATSP6;ATFCSH79B;ATST96;ATFCSD300000;ATFCSM1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x79B",
+   "data": "02 21 01 00 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 00 00 00 00 00 00 00",
+   "comment": "request 2101 (WiCAN pid 21018, multi, 8 response frames)",
+   "flow_control_id": "0x7BB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7BB",
+   "isotp": true,
+   "mask": "F0 00 FF FF 00 00 00 00",
+   "match": "10 00 61 01 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "((B34*65536)+[B35:B36])/10000",
+     "unit": "%",
+     "class": "battery"
+    },
+    {
+     "name": "SOH",
+     "expr": "[B31:B32]/102.4",
+     "unit": "%"
+    }
+   ]
+  }
+ ]
+}

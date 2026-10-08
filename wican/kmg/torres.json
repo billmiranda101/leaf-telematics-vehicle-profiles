@@ -1,0 +1,32 @@
+{
+ "id": "kgm-torres-evx",
+ "car_model": "KGM: Torres EVX",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/kmg/torres.json by tools/convert_wican.py. WiCAN init: ATSP6;ATSH7E0;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x7E0",
+   "data": "03 22 FD 0D 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 22FD0D (WiCAN pid 22FD0D2, multi, 2 response frames)"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x7E8",
+   "isotp": true,
+   "mask": "F0 00 FF FF FF 00 00 00",
+   "match": "10 00 62 FD 0D 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "[B7:B8]/10",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  }
+ ]
+}

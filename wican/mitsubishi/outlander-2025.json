@@ -1,0 +1,77 @@
+{
+ "id": "mitsubishi-outlander-phev-2025-2",
+ "car_model": "Mitsubishi: Outlander-PHEV 2025",
+ "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/mitsubishi/outlander-2025.json by tools/convert_wican.py. WiCAN init: ATSP7;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+ "bus_speed": 500000,
+ "tx": [],
+ "poll": [
+  {
+   "id": "0x18DB33F1",
+   "data": "03 22 01 D1 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 2201D1 (WiCAN pid 2201D1, single, -1 response frames)",
+   "flow_control_id": "0x18DAF1DB"
+  },
+  {
+   "id": "0x18DB33F1",
+   "data": "03 22 03 75 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 220375 (WiCAN pid 220375, single, -1 response frames)",
+   "flow_control_id": "0x18DAF1DB"
+  },
+  {
+   "id": "0x18DB33F1",
+   "data": "03 22 03 87 00 00 00 00",
+   "interval_ms": 1000,
+   "flow_control": "30 01 00 FF FF FF FF FF",
+   "comment": "request 220387 (WiCAN pid 220387, single, -1 response frames)",
+   "flow_control_id": "0x18DAF1DB"
+  }
+ ],
+ "rx": [
+  {
+   "id": "0x18DAF1DB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 01 D1 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC",
+     "expr": "(B6*0.64)-19.2",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x18DAF1DB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 03 75 00 00 00 00",
+   "signals": [
+    {
+     "name": "SOC_D",
+     "expr": "B6/2",
+     "unit": "%",
+     "class": "battery"
+    }
+   ]
+  },
+  {
+   "id": "0x18DAF1DB",
+   "isotp": true,
+   "mask": "00 FF FF FF 00 00 00 00",
+   "match": "00 62 03 87 00 00 00 00",
+   "signals": [
+    {
+     "name": "HV_V",
+     "expr": "B5+B6",
+     "unit": "V",
+     "class": "voltage"
+    }
+   ]
+  }
+ ]
+}
