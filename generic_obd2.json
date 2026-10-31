@@ -1,39 +1,567 @@
 {
   "id": "generic_obd2",
   "car_model": "Generic : OBD-II (any vehicle)",
-  "comment": "Minimal generic OBD-II profile: mode-01 PID polling on the functional broadcast address 0x7DF with single-frame responses decoded from 0x7E8 (ECU #1). BYTE OFFSETS (single-frame response): B1 = PCI byte (ISO-15765 single-frame header, value = number of following data bytes, e.g. 0x03), B2 = 0x41 (mode 01 + 0x40), B3 = PID, B4.. = data bytes (A, B, ...). The mask/match on B2:B3 (0x41:PID) also rejects multi-frame responses (their first frame has PCI 0x1n at B1 and carries 0x41 at B3), which is intentional: for the rare multi-frame response the assembled payload = data only, i.e. mode at B1, PID at B2, data byte A at B3 - firmware would need shifted exprs for those. All five requests share 0x7DF; with interval_ms 1000 they fire in the same tick - firmware may round-robin them to spread bus load. flow_control is omitted: these PIDs are almost always answered single-frame; add '30 00 00 00 00 00 00 00' if an ECU answers multi-frame. Standard scalings: speed = A km/h; RPM = (256*A+B)/4; coolant = A-40 degC; throttle = A*100/255 %; fuel = A*100/255 %.",
+  "comment": "Generic OBD-II profile for ICE vehicles, generated from the OBDex Mode 01 PID dataset (https://github.com/foerbsnavi/obdex, CC0-1.0) by tools/build_generic_obd2.py. Polls 93 standard PIDs on the functional broadcast address 0x7DF with single-frame responses decoded from 0x7E8 (ECU #1). BYTE OFFSETS (single-frame response): B1 = PCI byte (ISO-15765 single-frame header), B2 = 0x41 (mode 01 + 0x40), B3 = PID, B4.. = data bytes (A, B, ...). The mask/match on B2:B3 (0x41:PID) also rejects multi-frame responses, which is intentional: all polled PIDs answer in a single frame. Intervals are tiered (core driving parameters 1000 ms, the rest 5000 ms); all requests share 0x7DF, so the firmware round-robins them to spread bus load. PIDs that are bitmaps/enumerations or need multi-frame responses (O2 location bitmaps, supported-PID bitmaps, EGT bank frames) are intentionally omitted.",
   "bus_speed": 500000,
   "tx": [],
   "poll": [
     {
       "id": "0x7DF",
-      "data": "02 01 0D 00 00 00 00 00",
+      "data": "02 01 04 00 00 00 00 00",
       "interval_ms": 1000,
-      "comment": "Mode 01 PID 0x0D - vehicle speed."
-    },
-    {
-      "id": "0x7DF",
-      "data": "02 01 0C 00 00 00 00 00",
-      "interval_ms": 1000,
-      "comment": "Mode 01 PID 0x0C - engine RPM."
+      "comment": "Mode 01 PID 0x04 - Calculated engine load."
     },
     {
       "id": "0x7DF",
       "data": "02 01 05 00 00 00 00 00",
       "interval_ms": 1000,
-      "comment": "Mode 01 PID 0x05 - coolant temperature."
+      "comment": "Mode 01 PID 0x05 - Engine coolant temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 06 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x06 - Short term fuel trim — Bank 1."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 07 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x07 - Long term fuel trim — Bank 1."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 08 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x08 - Short term fuel trim — Bank 2."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 09 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x09 - Long term fuel trim — Bank 2."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x0A - Fuel pressure (gauge pressure)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0B 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0B - Intake manifold absolute pressure."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0C 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0C - Engine RPM."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0D 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0D - Vehicle speed."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x0E - Timing advance (cylinder 1)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 0F 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x0F - Intake air temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 10 00 00 00 00 00",
+      "interval_ms": 1000,
+      "comment": "Mode 01 PID 0x10 - Mass air flow rate."
     },
     {
       "id": "0x7DF",
       "data": "02 01 11 00 00 00 00 00",
       "interval_ms": 1000,
-      "comment": "Mode 01 PID 0x11 - throttle position."
+      "comment": "Mode 01 PID 0x11 - Throttle position."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 14 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x14 - Oxygen sensor 1 (Bank 1 Sensor 1) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 15 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x15 - Oxygen sensor 2 (Bank 1 Sensor 2) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 16 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x16 - Oxygen sensor 3 (Bank 1 Sensor 3) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 17 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x17 - Oxygen sensor 4 (Bank 1 Sensor 4) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 18 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x18 - Oxygen sensor 5 (Bank 2 Sensor 1) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 19 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x19 - Oxygen sensor 6 (Bank 2 Sensor 2) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 1A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x1A - Oxygen sensor 7 (Bank 2 Sensor 3) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 1B 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x1B - Oxygen sensor 8 (Bank 2 Sensor 4) — voltage and short term fuel trim."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 1F 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x1F - Run time since engine start."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 21 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x21 - Distance traveled with malfunction indicator lamp (MIL) on."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 22 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x22 - Fuel rail pressure (relative to manifold vacuum)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 23 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x23 - Fuel rail gauge pressure (diesel or petrol direct injection)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 24 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x24 - Oxygen sensor 1 (Bank 1 Sensor 1) — air-fuel equivalence ratio (lambda) and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 25 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x25 - Oxygen sensor 2 (Bank 1 Sensor 2) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 26 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x26 - Oxygen sensor 3 (Bank 1 Sensor 3) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 27 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x27 - Oxygen sensor 4 (Bank 1 Sensor 4) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 28 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x28 - Oxygen sensor 5 (Bank 2 Sensor 1) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 29 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x29 - Oxygen sensor 6 (Bank 2 Sensor 2) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x2A - Oxygen sensor 7 (Bank 2 Sensor 3) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2B 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x2B - Oxygen sensor 8 (Bank 2 Sensor 4) — air-fuel equivalence ratio and voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2C 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x2C - Commanded EGR."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2D 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x2D - EGR Error."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 2E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x2E - Commanded evaporative purge."
     },
     {
       "id": "0x7DF",
       "data": "02 01 2F 00 00 00 00 00",
       "interval_ms": 1000,
-      "comment": "Mode 01 PID 0x2F - fuel tank level."
+      "comment": "Mode 01 PID 0x2F - Fuel tank level."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 30 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x30 - Warm-ups since codes cleared."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 31 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x31 - Distance traveled since codes cleared."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 32 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x32 - Evaporative system vapor pressure."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 33 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x33 - Absolute barometric pressure."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 34 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x34 - Oxygen sensor 1 (Bank 1 Sensor 1) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 35 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x35 - Oxygen sensor 2 (Bank 1 Sensor 2) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 36 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x36 - Oxygen sensor 3 (Bank 1 Sensor 3) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 37 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x37 - Oxygen sensor 4 (Bank 1 Sensor 4) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 38 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x38 - Oxygen sensor 5 (Bank 2 Sensor 1) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 39 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x39 - Oxygen sensor 6 (Bank 2 Sensor 2) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3A - Oxygen sensor 7 (Bank 2 Sensor 3) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3B 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3B - Oxygen sensor 8 (Bank 2 Sensor 4) — air-fuel equivalence ratio and current."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3C 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3C - Catalyst temperature — Bank 1, Sensor 1."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3D 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3D - Catalyst temperature — Bank 2, Sensor 1."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3E - Catalyst temperature — Bank 1, Sensor 2."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 3F 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x3F - Catalyst temperature — Bank 2, Sensor 2."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 42 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x42 - Control module voltage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 43 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x43 - Absolute load value."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 44 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x44 - Commanded air-fuel equivalence ratio (lambda)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 45 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x45 - Relative throttle position."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 46 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x46 - Ambient air temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 47 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x47 - Absolute throttle position B."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 48 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x48 - Absolute throttle position C."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 49 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x49 - Accelerator pedal position D."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 4A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x4A - Accelerator pedal position E."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 4B 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x4B - Accelerator pedal position F."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 4C 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x4C - Commanded throttle actuator."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 4D 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x4D - Time run with MIL on."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 4E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x4E - Time since trouble codes cleared."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 50 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x50 - Maximum value for air flow rate from mass air flow sensor (only A used; B, C, D reserved)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 52 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x52 - Ethanol fuel percentage."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 53 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x53 - Absolute evaporative system vapor pressure."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 54 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x54 - Evaporative system vapor pressure (signed)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 55 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x55 - Short term secondary oxygen sensor trim — Bank 1 (A) and Bank 3 (B)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 56 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x56 - Long term secondary oxygen sensor trim — Bank 1 (A) and Bank 3 (B)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 57 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x57 - Short term secondary oxygen sensor trim — Bank 2 (A) and Bank 4 (B)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 58 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x58 - Long term secondary oxygen sensor trim — Bank 2 (A) and Bank 4 (B)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 59 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x59 - Fuel rail absolute pressure."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 5A 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x5A - Relative accelerator pedal position."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 5B 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x5B - Hybrid battery pack remaining life."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 5C 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x5C - Engine oil temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 5D 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x5D - Fuel injection timing."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 5E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x5E - Engine fuel rate."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 61 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x61 - Driver's demand engine percent torque."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 62 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x62 - Actual engine percent torque."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 63 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x63 - Engine reference torque."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 64 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x64 - Engine percent torque at five engine points (idle, peak, reference points)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 66 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x66 - Mass air flow sensor (A and B)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 67 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x67 - Engine coolant temperature (sensor 1 and sensor 2)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 84 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x84 - Manifold surface temperature."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 8E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x8E - Engine friction percent torque."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 9D 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x9D - Engine fuel rate (engine and vehicle, in g/s)."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 9E 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0x9E - Engine exhaust flow rate."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 A2 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0xA2 - Cylinder fuel rate."
+    },
+    {
+      "id": "0x7DF",
+      "data": "02 01 A6 00 00 00 00 00",
+      "interval_ms": 5000,
+      "comment": "Mode 01 PID 0xA6 - Odometer."
     }
   ],
   "rx": [
@@ -41,20 +569,14 @@
       "id": "0x7E8",
       "isotp": true,
       "mask": "00 FF FF 00 00 00 00 00",
-      "match": "00 41 0D 00 00 00 00 00",
-      "comment": "Single-frame response to 010D: B1 = PCI (0x03), B2 = 0x41, B3 = 0x0D, B4 = data byte A.",
+      "match": "00 41 04 00 00 00 00 00",
+      "comment": "Single-frame response to 0104: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
       "signals": [
-        {"name": "SPEED", "expr": "B4", "unit": "km/h"}
-      ]
-    },
-    {
-      "id": "0x7E8",
-      "isotp": true,
-      "mask": "00 FF FF 00 00 00 00 00",
-      "match": "00 41 0C 00 00 00 00 00",
-      "comment": "Single-frame response to 010C: B4 = data byte A (high), B5 = data byte B (low); RPM = (256*A+B)/4 = [B4:B5]*0.25.",
-      "signals": [
-        {"name": "ENGINE_RPM", "expr": "[B4:B5]*0.25", "unit": "rpm"}
+        {
+          "name": "CALCULATED_ENGINE_LOAD",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
       ]
     },
     {
@@ -62,9 +584,167 @@
       "isotp": true,
       "mask": "00 FF FF 00 00 00 00 00",
       "match": "00 41 05 00 00 00 00 00",
-      "comment": "Single-frame response to 0105: B4 = data byte A; coolant = A-40 degC.",
+      "comment": "Single-frame response to 0105: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 40).",
       "signals": [
-        {"name": "COOLANT_TMP", "expr": "B4-40", "unit": "degC"}
+        {
+          "name": "ENGINE_COOLANT_TEMPERATURE",
+          "expr": "B4 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 06 00 00 00 00 00",
+      "comment": "Single-frame response to 0106: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100).",
+      "signals": [
+        {
+          "name": "SHORT_TERM_FUEL_TRIM",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 07 00 00 00 00 00",
+      "comment": "Single-frame response to 0107: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100).",
+      "signals": [
+        {
+          "name": "LONG_TERM_FUEL_TRIM",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 08 00 00 00 00 00",
+      "comment": "Single-frame response to 0108: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100).",
+      "signals": [
+        {
+          "name": "SHORT_TERM_FUEL_TRIM_2",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 09 00 00 00 00 00",
+      "comment": "Single-frame response to 0109: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100).",
+      "signals": [
+        {
+          "name": "LONG_TERM_FUEL_TRIM_2",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0A 00 00 00 00 00",
+      "comment": "Single-frame response to 010A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (3 * A).",
+      "signals": [
+        {
+          "name": "FUEL_PRESSURE_GAUGE_PRESSURE",
+          "expr": "3 * B4",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0B 00 00 00 00 00",
+      "comment": "Single-frame response to 010B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A).",
+      "signals": [
+        {
+          "name": "INTAKE_MANIFOLD_ABSOLUTE_PRESSURE",
+          "expr": "B4",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0C 00 00 00 00 00",
+      "comment": "Single-frame response to 010C: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 4).",
+      "signals": [
+        {
+          "name": "ENGINE_RPM",
+          "expr": "(256*B4 + B5) / 4",
+          "unit": "rpm"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0D 00 00 00 00 00",
+      "comment": "Single-frame response to 010D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A).",
+      "signals": [
+        {
+          "name": "VEHICLE_SPEED",
+          "expr": "B4",
+          "unit": "km/h"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0E 00 00 00 00 00",
+      "comment": "Single-frame response to 010E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/2 - 64).",
+      "signals": [
+        {
+          "name": "TIMING_ADVANCE_CYLINDER_1",
+          "expr": "B4/2 - 64",
+          "unit": "° before TDC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 0F 00 00 00 00 00",
+      "comment": "Single-frame response to 010F: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 40).",
+      "signals": [
+        {
+          "name": "INTAKE_AIR_TEMPERATURE",
+          "expr": "B4 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 10 00 00 00 00 00",
+      "comment": "Single-frame response to 0110: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 100).",
+      "signals": [
+        {
+          "name": "MASS_AIR_FLOW_RATE",
+          "expr": "(256*B4 + B5) / 100",
+          "unit": "g/s"
+        }
       ]
     },
     {
@@ -72,9 +752,415 @@
       "isotp": true,
       "mask": "00 FF FF 00 00 00 00 00",
       "match": "00 41 11 00 00 00 00 00",
-      "comment": "Single-frame response to 0111: B4 = data byte A; throttle = A*100/255 %.",
+      "comment": "Single-frame response to 0111: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
       "signals": [
-        {"name": "THROTTLE", "expr": "B4*100/255", "unit": "%"}
+        {
+          "name": "THROTTLE_POSITION",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 14 00 00 00 00 00",
+      "comment": "Single-frame response to 0114: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_1_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_1_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 15 00 00 00 00 00",
+      "comment": "Single-frame response to 0115: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_2_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_2_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 16 00 00 00 00 00",
+      "comment": "Single-frame response to 0116: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_3_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_3_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 17 00 00 00 00 00",
+      "comment": "Single-frame response to 0117: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_4_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_4_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 18 00 00 00 00 00",
+      "comment": "Single-frame response to 0118: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_5_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_5_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 19 00 00 00 00 00",
+      "comment": "Single-frame response to 0119: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_6_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_6_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 1A 00 00 00 00 00",
+      "comment": "Single-frame response to 011A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_7_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_7_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 1B 00 00 00 00 00",
+      "comment": "Single-frame response to 011B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A/200 (voltage); 100/128 * B - 100 (trim)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_8_VOLTAGE",
+          "expr": "B4/200",
+          "unit": "V"
+        },
+        {
+          "name": "OXYGEN_SENSOR_8_TRIM",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 1F 00 00 00 00 00",
+      "comment": "Single-frame response to 011F: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256 * A + B).",
+      "signals": [
+        {
+          "name": "RUN_TIME_SINCE_ENGINE_START",
+          "expr": "256 * B4 + B5",
+          "unit": "s"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 21 00 00 00 00 00",
+      "comment": "Single-frame response to 0121: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256 * A + B).",
+      "signals": [
+        {
+          "name": "DISTANCE_TRAVELED_WITH_MALFUNCTION_INDICATOR_LAM",
+          "expr": "256 * B4 + B5",
+          "unit": "km"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 22 00 00 00 00 00",
+      "comment": "Single-frame response to 0122: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (0.079 * (256 * A + B)).",
+      "signals": [
+        {
+          "name": "FUEL_RAIL_PRESSURE_RELATIVE_TO_MANIFOLD_VACUUM",
+          "expr": "0.079 * (256 * B4 + B5)",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 23 00 00 00 00 00",
+      "comment": "Single-frame response to 0123: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (10 * (256 * A + B)).",
+      "signals": [
+        {
+          "name": "FUEL_RAIL_GAUGE_PRESSURE_DIESEL_OR_PETROL_DIRECT",
+          "expr": "10 * (256 * B4 + B5)",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 24 00 00 00 00 00",
+      "comment": "Single-frame response to 0124: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_1_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_1_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 25 00 00 00 00 00",
+      "comment": "Single-frame response to 0125: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_2_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_2_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 26 00 00 00 00 00",
+      "comment": "Single-frame response to 0126: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_3_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_3_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 27 00 00 00 00 00",
+      "comment": "Single-frame response to 0127: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_4_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_4_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 28 00 00 00 00 00",
+      "comment": "Single-frame response to 0128: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_5_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_5_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 29 00 00 00 00 00",
+      "comment": "Single-frame response to 0129: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_6_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_6_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2A 00 00 00 00 00",
+      "comment": "Single-frame response to 012A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_7_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_7_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2B 00 00 00 00 00",
+      "comment": "Single-frame response to 012B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (8/65536) * (256*C + D) (voltage)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_8_LAMBDA",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_8_VOLTAGE_2",
+          "expr": "(8/65536) * (256*B6 + B7)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2C 00 00 00 00 00",
+      "comment": "Single-frame response to 012C: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "COMMANDED_EGR",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2D 00 00 00 00 00",
+      "comment": "Single-frame response to 012D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100).",
+      "signals": [
+        {
+          "name": "EGR_ERROR",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 2E 00 00 00 00 00",
+      "comment": "Single-frame response to 012E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "COMMANDED_EVAPORATIVE_PURGE",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
       ]
     },
     {
@@ -82,9 +1168,878 @@
       "isotp": true,
       "mask": "00 FF FF 00 00 00 00 00",
       "match": "00 41 2F 00 00 00 00 00",
-      "comment": "Single-frame response to 012F: B4 = data byte A; fuel level = A*100/255 %.",
+      "comment": "Single-frame response to 012F: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
       "signals": [
-        {"name": "FUEL_LEVEL", "expr": "B4*100/255", "unit": "%"}
+        {
+          "name": "FUEL_TANK_LEVEL",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 30 00 00 00 00 00",
+      "comment": "Single-frame response to 0130: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A).",
+      "signals": [
+        {
+          "name": "WARM_UPS_SINCE_CODES_CLEARED",
+          "expr": "B4",
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 31 00 00 00 00 00",
+      "comment": "Single-frame response to 0131: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256 * A + B).",
+      "signals": [
+        {
+          "name": "DISTANCE_TRAVELED_SINCE_CODES_CLEARED",
+          "expr": "256 * B4 + B5",
+          "unit": "km"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 32 00 00 00 00 00",
+      "comment": "Single-frame response to 0132: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (((256*A + B) / 4) - 8192).",
+      "signals": [
+        {
+          "name": "EVAPORATIVE_SYSTEM_VAPOR_PRESSURE",
+          "expr": "((256*B4 + B5) / 4) - 8192",
+          "unit": "Pa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 33 00 00 00 00 00",
+      "comment": "Single-frame response to 0133: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A).",
+      "signals": [
+        {
+          "name": "ABSOLUTE_BAROMETRIC_PRESSURE",
+          "expr": "B4",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 34 00 00 00 00 00",
+      "comment": "Single-frame response to 0134: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_1_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_1_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 35 00 00 00 00 00",
+      "comment": "Single-frame response to 0135: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_2_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_2_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 36 00 00 00 00 00",
+      "comment": "Single-frame response to 0136: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_3_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_3_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 37 00 00 00 00 00",
+      "comment": "Single-frame response to 0137: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_4_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_4_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 38 00 00 00 00 00",
+      "comment": "Single-frame response to 0138: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_5_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_5_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 39 00 00 00 00 00",
+      "comment": "Single-frame response to 0139: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_6_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_6_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3A 00 00 00 00 00",
+      "comment": "Single-frame response to 013A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_7_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_7_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3B 00 00 00 00 00",
+      "comment": "Single-frame response to 013B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2/65536) * (256*A + B) (lambda); (256*C + D)/256 - 128 (current, mA)).",
+      "signals": [
+        {
+          "name": "OXYGEN_SENSOR_8_LAMBDA_2",
+          "expr": "(2/65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        },
+        {
+          "name": "OXYGEN_SENSOR_8_CURRENT",
+          "expr": "(256*B6 + B7)/256 - 128",
+          "unit": "mA"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3C 00 00 00 00 00",
+      "comment": "Single-frame response to 013C: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 10 - 40).",
+      "signals": [
+        {
+          "name": "CATALYST_TEMPERATURE",
+          "expr": "(256*B4 + B5) / 10 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3D 00 00 00 00 00",
+      "comment": "Single-frame response to 013D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 10 - 40).",
+      "signals": [
+        {
+          "name": "CATALYST_TEMPERATURE_2",
+          "expr": "(256*B4 + B5) / 10 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3E 00 00 00 00 00",
+      "comment": "Single-frame response to 013E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 10 - 40).",
+      "signals": [
+        {
+          "name": "CATALYST_TEMPERATURE_3",
+          "expr": "(256*B4 + B5) / 10 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 3F 00 00 00 00 00",
+      "comment": "Single-frame response to 013F: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 10 - 40).",
+      "signals": [
+        {
+          "name": "CATALYST_TEMPERATURE_4",
+          "expr": "(256*B4 + B5) / 10 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 42 00 00 00 00 00",
+      "comment": "Single-frame response to 0142: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 1000).",
+      "signals": [
+        {
+          "name": "CONTROL_MODULE_VOLTAGE",
+          "expr": "(256*B4 + B5) / 1000",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 43 00 00 00 00 00",
+      "comment": "Single-frame response to 0143: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * (256*A + B)).",
+      "signals": [
+        {
+          "name": "ABSOLUTE_LOAD_VALUE",
+          "expr": "100/255 * (256*B4 + B5)",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 44 00 00 00 00 00",
+      "comment": "Single-frame response to 0144: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((2 / 65536) * (256*A + B)).",
+      "signals": [
+        {
+          "name": "COMMANDED_AIR_FUEL_EQUIVALENCE_RATIO_LAMBDA",
+          "expr": "(2 / 65536) * (256*B4 + B5)",
+          "unit": "ratio"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 45 00 00 00 00 00",
+      "comment": "Single-frame response to 0145: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "RELATIVE_THROTTLE_POSITION",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 46 00 00 00 00 00",
+      "comment": "Single-frame response to 0146: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 40).",
+      "signals": [
+        {
+          "name": "AMBIENT_AIR_TEMPERATURE",
+          "expr": "B4 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 47 00 00 00 00 00",
+      "comment": "Single-frame response to 0147: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ABSOLUTE_THROTTLE_POSITION_B",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 48 00 00 00 00 00",
+      "comment": "Single-frame response to 0148: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ABSOLUTE_THROTTLE_POSITION_C",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 49 00 00 00 00 00",
+      "comment": "Single-frame response to 0149: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ACCELERATOR_PEDAL_POSITION_D",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 4A 00 00 00 00 00",
+      "comment": "Single-frame response to 014A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ACCELERATOR_PEDAL_POSITION_E",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 4B 00 00 00 00 00",
+      "comment": "Single-frame response to 014B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ACCELERATOR_PEDAL_POSITION_F",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 4C 00 00 00 00 00",
+      "comment": "Single-frame response to 014C: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "COMMANDED_THROTTLE_ACTUATOR",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 4D 00 00 00 00 00",
+      "comment": "Single-frame response to 014D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256*A + B).",
+      "signals": [
+        {
+          "name": "TIME_RUN_WITH_MIL_ON",
+          "expr": "256*B4 + B5",
+          "unit": "min"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 4E 00 00 00 00 00",
+      "comment": "Single-frame response to 014E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256*A + B).",
+      "signals": [
+        {
+          "name": "TIME_SINCE_TROUBLE_CODES_CLEARED",
+          "expr": "256*B4 + B5",
+          "unit": "min"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 50 00 00 00 00 00",
+      "comment": "Single-frame response to 0150: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A * 10).",
+      "signals": [
+        {
+          "name": "MAXIMUM_VALUE_FOR_AIR_FLOW_RATE_FROM_MASS_AIR_FL",
+          "expr": "B4 * 10",
+          "unit": "g/s"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 52 00 00 00 00 00",
+      "comment": "Single-frame response to 0152: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "ETHANOL_FUEL_PERCENTAGE",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 53 00 00 00 00 00",
+      "comment": "Single-frame response to 0153: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 200).",
+      "signals": [
+        {
+          "name": "ABSOLUTE_EVAPORATIVE_SYSTEM_VAPOR_PRESSURE",
+          "expr": "(256*B4 + B5) / 200",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 54 00 00 00 00 00",
+      "comment": "Single-frame response to 0154: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) - 32767).",
+      "signals": [
+        {
+          "name": "EVAPORATIVE_SYSTEM_VAPOR_PRESSURE_SIGNED",
+          "expr": "(256*B4 + B5) - 32767",
+          "unit": "Pa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 55 00 00 00 00 00",
+      "comment": "Single-frame response to 0155: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100 (Bank 1); 100/128 * B - 100 (Bank 3)).",
+      "signals": [
+        {
+          "name": "SHORT_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_1",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        },
+        {
+          "name": "SHORT_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_3",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 56 00 00 00 00 00",
+      "comment": "Single-frame response to 0156: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100 (Bank 1); 100/128 * B - 100 (Bank 3)).",
+      "signals": [
+        {
+          "name": "LONG_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_1",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        },
+        {
+          "name": "LONG_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_3",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 57 00 00 00 00 00",
+      "comment": "Single-frame response to 0157: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100 (Bank 2); 100/128 * B - 100 (Bank 4)).",
+      "signals": [
+        {
+          "name": "SHORT_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_2",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        },
+        {
+          "name": "SHORT_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_4",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 58 00 00 00 00 00",
+      "comment": "Single-frame response to 0158: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/128 * A - 100 (Bank 2); 100/128 * B - 100 (Bank 4)).",
+      "signals": [
+        {
+          "name": "LONG_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_2",
+          "expr": "100/128 * B4 - 100",
+          "unit": "%"
+        },
+        {
+          "name": "LONG_TERM_SECONDARY_OXYGEN_SENSOR_TRIM_BANK_4",
+          "expr": "100/128 * B5 - 100",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 59 00 00 00 00 00",
+      "comment": "Single-frame response to 0159: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (10 * (256*A + B)).",
+      "signals": [
+        {
+          "name": "FUEL_RAIL_ABSOLUTE_PRESSURE",
+          "expr": "10 * (256*B4 + B5)",
+          "unit": "kPa"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 5A 00 00 00 00 00",
+      "comment": "Single-frame response to 015A: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "RELATIVE_ACCELERATOR_PEDAL_POSITION",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 5B 00 00 00 00 00",
+      "comment": "Single-frame response to 015B: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (100/255 * A).",
+      "signals": [
+        {
+          "name": "HYBRID_BATTERY_PACK_REMAINING_LIFE",
+          "expr": "100/255 * B4",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 5C 00 00 00 00 00",
+      "comment": "Single-frame response to 015C: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 40).",
+      "signals": [
+        {
+          "name": "ENGINE_OIL_TEMPERATURE",
+          "expr": "B4 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 5D 00 00 00 00 00",
+      "comment": "Single-frame response to 015D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (((256*A + B) - 26880) / 128).",
+      "signals": [
+        {
+          "name": "FUEL_INJECTION_TIMING",
+          "expr": "((256*B4 + B5) - 26880) / 128",
+          "unit": "deg"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 5E 00 00 00 00 00",
+      "comment": "Single-frame response to 015E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 20).",
+      "signals": [
+        {
+          "name": "ENGINE_FUEL_RATE",
+          "expr": "(256*B4 + B5) / 20",
+          "unit": "L/h"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 61 00 00 00 00 00",
+      "comment": "Single-frame response to 0161: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 125).",
+      "signals": [
+        {
+          "name": "DRIVER_S_DEMAND_ENGINE_PERCENT_TORQUE",
+          "expr": "B4 - 125",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 62 00 00 00 00 00",
+      "comment": "Single-frame response to 0162: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 125).",
+      "signals": [
+        {
+          "name": "ACTUAL_ENGINE_PERCENT_TORQUE",
+          "expr": "B4 - 125",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 63 00 00 00 00 00",
+      "comment": "Single-frame response to 0163: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (256*A + B).",
+      "signals": [
+        {
+          "name": "ENGINE_REFERENCE_TORQUE",
+          "expr": "256*B4 + B5",
+          "unit": "Nm"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 64 00 00 00 00 00",
+      "comment": "Single-frame response to 0164: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 125 (idle); B - 125 (point2); C - 125 (point3); D - 125 (point4); E - 125 (point5)).",
+      "signals": [
+        {
+          "name": "ENGINE_PERCENT_TORQUE_AT_FIVE_ENGINE_POINTS_IDLE",
+          "expr": "B4 - 125",
+          "unit": "%"
+        },
+        {
+          "name": "ENGINE_PERCENT_TORQUE_AT_FIVE_ENGINE_POINTS_POIN",
+          "expr": "B5 - 125",
+          "unit": "%"
+        },
+        {
+          "name": "ENGINE_PERCENT_TORQUE_AT_FIVE_ENGINE_POINTS_2",
+          "expr": "B6 - 125",
+          "unit": "%"
+        },
+        {
+          "name": "ENGINE_PERCENT_TORQUE_AT_FIVE_ENGINE_POINTS_3",
+          "expr": "B7 - 125",
+          "unit": "%"
+        },
+        {
+          "name": "ENGINE_PERCENT_TORQUE_AT_FIVE_ENGINE_POINTS_4",
+          "expr": "B8 - 125",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 66 00 00 00 00 00",
+      "comment": "Single-frame response to 0166: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (((256*B + C) / 32) (sensor A); ((256*D + E) / 32) (sensor B)).",
+      "signals": [
+        {
+          "name": "MASS_AIR_FLOW_SENSOR_SENSOR_A",
+          "expr": "((256*B5 + B6) / 32)",
+          "unit": "g/s"
+        },
+        {
+          "name": "MASS_AIR_FLOW_SENSOR_SENSOR_B",
+          "expr": "((256*B7 + B8) / 32)",
+          "unit": "g/s"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 67 00 00 00 00 00",
+      "comment": "Single-frame response to 0167: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (B - 40 (sensor 1); C - 40 (sensor 2)).",
+      "signals": [
+        {
+          "name": "ENGINE_COOLANT_TEMPERATURE_SENSOR_1",
+          "expr": "B5 - 40",
+          "unit": "degC"
+        },
+        {
+          "name": "ENGINE_COOLANT_TEMPERATURE_SENSOR_2",
+          "expr": "B6 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 84 00 00 00 00 00",
+      "comment": "Single-frame response to 0184: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 40).",
+      "signals": [
+        {
+          "name": "MANIFOLD_SURFACE_TEMPERATURE",
+          "expr": "B4 - 40",
+          "unit": "degC"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 8E 00 00 00 00 00",
+      "comment": "Single-frame response to 018E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (A - 125).",
+      "signals": [
+        {
+          "name": "ENGINE_FRICTION_PERCENT_TORQUE",
+          "expr": "B4 - 125",
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 9D 00 00 00 00 00",
+      "comment": "Single-frame response to 019D: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 50 (engine fuel rate); (256*C + D) / 50 (vehicle fuel rate)).",
+      "signals": [
+        {
+          "name": "ENGINE_FUEL_RATE_ENGINE",
+          "expr": "(256*B4 + B5) / 50",
+          "unit": "g/s"
+        },
+        {
+          "name": "ENGINE_FUEL_RATE_VEHICLE",
+          "expr": "(256*B6 + B7) / 50",
+          "unit": "g/s"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 9E 00 00 00 00 00",
+      "comment": "Single-frame response to 019E: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 5).",
+      "signals": [
+        {
+          "name": "ENGINE_EXHAUST_FLOW_RATE",
+          "expr": "(256*B4 + B5) / 5",
+          "unit": "g/s"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 A2 00 00 00 00 00",
+      "comment": "Single-frame response to 01A2: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data ((256*A + B) / 32).",
+      "signals": [
+        {
+          "name": "CYLINDER_FUEL_RATE",
+          "expr": "(256*B4 + B5) / 32",
+          "unit": "mg/stroke"
+        }
+      ]
+    },
+    {
+      "id": "0x7E8",
+      "isotp": true,
+      "mask": "00 FF FF 00 00 00 00 00",
+      "match": "00 41 A6 00 00 00 00 00",
+      "comment": "Single-frame response to 01A6: B1 = PCI, B2 = 0x41, B3 = PID, B4.. = data (((A * 16777216) + (B * 65536) + (C * 256) + D) / 10).",
+      "signals": [
+        {
+          "name": "ODOMETER",
+          "expr": "((B4 * 16777216) + (B5 * 65536) + (B6 * 256) + B7) / 10",
+          "unit": "km"
+        }
       ]
     }
   ]

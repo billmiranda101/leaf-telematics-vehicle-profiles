@@ -1,0 +1,122 @@
+{
+  "id": "byd-atto-2-atto-3-yuan-plus-ev-dolphin-seal-seal-u-sealion-m6-emax-7-denza-d9-denza-n7-sealion-7-ev-eu-version-only-before-2024-10-update-2",
+  "car_model": "BYD: Yuan Plus EV",
+  "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/byd/byd_202410_update.json by tools/convert_wican.py. WiCAN init: ATSP6;ATAT1;ATST96;ATSH7E7;ATFCSH7E7;ATFCSD300000;ATFCSM1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent. Ignored init commands: ATFCSM1.",
+  "bus_speed": 500000,
+  "tx": [],
+  "poll": [
+    {
+      "id": "0x7E7",
+      "data": "03 22 00 05 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 220005 (WiCAN pid 220005, single, -1 response frames)"
+    },
+    {
+      "id": "0x7E7",
+      "data": "03 22 1F FE 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 221FFE (WiCAN pid 221FFE, single, -1 response frames)"
+    },
+    {
+      "id": "0x7E7",
+      "data": "03 22 1F FC 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 221FFC (WiCAN pid 221FFC, single, -1 response frames)"
+    },
+    {
+      "id": "0x7E7",
+      "data": "03 22 00 08 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 220008 (WiCAN pid 220008, single, -1 response frames)"
+    },
+    {
+      "id": "0x7E7",
+      "data": "03 22 00 09 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 220009 (WiCAN pid 220009, single, -1 response frames)"
+    }
+  ],
+  "rx": [
+    {
+      "id": "0x7EF",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 00 05 00 00 00 00",
+      "signals": [
+        {
+          "name": "SOC_D",
+          "expr": "B5",
+          "unit": "%",
+          "class": "battery"
+        }
+      ]
+    },
+    {
+      "id": "0x7EF",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 1F FE 00 00 00 00",
+      "signals": [
+        {
+          "name": "HV_CAPACITY",
+          "expr": "(((B8*256)+B7)/100)",
+          "unit": "Ah",
+          "class": "battery"
+        }
+      ]
+    },
+    {
+      "id": "0x7EF",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 1F FC 00 00 00 00",
+      "signals": [
+        {
+          "name": "BATT_CAPACITY",
+          "expr": "(((B8*256)+B7)/100)",
+          "unit": "Ah",
+          "class": "battery"
+        },
+        {
+          "name": "SOC",
+          "expr": "((((B6*256)+B5)*100)/10000)",
+          "unit": "%",
+          "class": "battery"
+        }
+      ]
+    },
+    {
+      "id": "0x7EF",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 00 08 00 00 00 00",
+      "signals": [
+        {
+          "name": "HV_V",
+          "expr": "((B6*256)+B5)",
+          "unit": "V",
+          "class": "voltage"
+        }
+      ]
+    },
+    {
+      "id": "0x7EF",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 00 09 00 00 00 00",
+      "signals": [
+        {
+          "name": "HV_A",
+          "expr": "((((B6*256)+B5)*0.1)-500)",
+          "unit": "A",
+          "class": "current"
+        }
+      ]
+    }
+  ]
+}

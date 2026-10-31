@@ -1,0 +1,147 @@
+{
+  "id": "gwm-ora-good-cat-funky-cat-es11-haomao-ora-03-2",
+  "car_model": "GWM: Haomao",
+  "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/gwm/gwm.json by tools/convert_wican.py. WiCAN init: ATSP6;ATAT1;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+  "bus_speed": 500000,
+  "tx": [],
+  "poll": [
+    {
+      "id": "0x78A",
+      "data": "03 22 D0 62 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 00 00 00 00 00 00 00",
+      "comment": "request 22D062 (WiCAN pid 22D0621, single, 1 response frame)",
+      "flow_control_id": "0x7CA"
+    },
+    {
+      "id": "0x78B",
+      "data": "03 22 D0 04 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 01 00 FF FF FF FF FF",
+      "comment": "request 22D004 (WiCAN pid 22D0041, single, 1 response frame)",
+      "flow_control_id": "0x7CB"
+    },
+    {
+      "id": "0x78A",
+      "data": "03 22 D0 31 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 01 00 FF FF FF FF FF",
+      "comment": "request 22D031 (WiCAN pid 22D0311, single, 1 response frame)",
+      "flow_control_id": "0x7CA"
+    },
+    {
+      "id": "0x76C",
+      "data": "03 22 02 10 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 01 00 FF FF FF FF FF",
+      "comment": "request 220210 (WiCAN pid 2202102, multi, 2 response frames)",
+      "flow_control_id": "0x7AC"
+    }
+  ],
+  "rx": [
+    {
+      "id": "0x7CA",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 D0 62 00 00 00 00",
+      "signals": [
+        {
+          "name": "HV_CAPACITY_KWH",
+          "expr": "[B7:B8]/10",
+          "unit": "kWh",
+          "class": "energy"
+        },
+        {
+          "name": "SOC",
+          "expr": "[B5:B6]/10",
+          "unit": "%",
+          "class": "battery"
+        }
+      ]
+    },
+    {
+      "id": "0x7CB",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 D0 04 00 00 00 00",
+      "signals": [
+        {
+          "name": "ODOMETER",
+          "expr": "[B6:B7]",
+          "unit": "km",
+          "class": "distance"
+        }
+      ]
+    },
+    {
+      "id": "0x7CA",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 D0 31 00 00 00 00",
+      "signals": [
+        {
+          "name": "COOLANT_TMP",
+          "expr": "([B7:B8]-400)/10",
+          "unit": "°C",
+          "class": "temperature"
+        }
+      ]
+    },
+    {
+      "id": "0x7AC",
+      "isotp": true,
+      "mask": "F0 00 FF FF FF 00 00 00",
+      "match": "10 00 62 02 10 00 00 00",
+      "signals": [
+        {
+          "name": "TYRE_P_FL",
+          "expr": "B4*0.2-0.22",
+          "unit": "psi",
+          "class": "pressure"
+        },
+        {
+          "name": "TYRE_P_FR",
+          "expr": "B6*0.2-0.22",
+          "unit": "psi",
+          "class": "pressure"
+        },
+        {
+          "name": "TYRE_P_RL",
+          "expr": "B8*0.2-0.22",
+          "unit": "psi",
+          "class": "pressure"
+        },
+        {
+          "name": "TYRE_P_RR",
+          "expr": "B10*0.2-0.22",
+          "unit": "psi",
+          "class": "pressure"
+        },
+        {
+          "name": "TYRE_T_FL",
+          "expr": "B5-50",
+          "unit": "°C",
+          "class": "temperature"
+        },
+        {
+          "name": "TYRE_T_FR",
+          "expr": "B7-50",
+          "unit": "°C",
+          "class": "temperature"
+        },
+        {
+          "name": "TYRE_T_RL",
+          "expr": "B9-50",
+          "unit": "°C",
+          "class": "temperature"
+        },
+        {
+          "name": "TYRE_T_RR",
+          "expr": "B11-50",
+          "unit": "°C",
+          "class": "temperature"
+        }
+      ]
+    }
+  ]
+}

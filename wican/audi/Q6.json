@@ -1,0 +1,33 @@
+{
+  "id": "audi-pq25-pq26-pq35-pq46-mqb-2",
+  "car_model": "Audi: Q6",
+  "comment": "Converted from meatpiHQ/wican-fw vehicle_profiles/audi/a3.json by tools/convert_wican.py. WiCAN init: ATSP6;ATST96;. Expression re-basing: WiCAN exprs are 0-based over ELM327 response data including PCI bytes; converted to this schema's isotp semantics (single-frame: raw frame, PCI at B1; multi-frame: assembled payload = FF bytes 2..7 + CF bytes 1..7). Frame layout per pid from the WiCAN pid string's trailing frame-count digit, inferred from byte refs when absent.",
+  "bus_speed": 500000,
+  "tx": [],
+  "poll": [
+    {
+      "id": "0x714",
+      "data": "03 22 22 03 00 00 00 00",
+      "interval_ms": 1000,
+      "flow_control": "30 01 00 FF FF FF FF FF",
+      "comment": "request 222203 (WiCAN pid 2222031, single, 1 response frame)",
+      "flow_control_id": "0x77E"
+    }
+  ],
+  "rx": [
+    {
+      "id": "0x77E",
+      "isotp": true,
+      "mask": "00 FF FF FF 00 00 00 00",
+      "match": "00 62 22 03 00 00 00 00",
+      "signals": [
+        {
+          "name": "ODOMETER",
+          "expr": "[B5:B7]",
+          "unit": "km",
+          "class": "distance"
+        }
+      ]
+    }
+  ]
+}
